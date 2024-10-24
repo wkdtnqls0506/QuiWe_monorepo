@@ -5,9 +5,14 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "baseUrl": ".", // 프로젝트 루트를 기준으로 설정
+    "paths": {
+      "@/*": ["./src/*"] // @ 별칭을 src 폴더로 설정
+    }
   },
   "include": [
+    "svgr.d.ts",
     "next-env.d.ts",
     "next.config.mjs",
     "**/*.ts",
