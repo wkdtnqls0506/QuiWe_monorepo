@@ -9,7 +9,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -17,13 +17,13 @@ export class UsersController {
 
   //get all users
   @Get()
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return this.usersService.findAll();
   }
 
   //get user by id
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<User> {
+  async findOne(@Param('id') id: number): Promise<UserEntity> {
     const user = await this.usersService.findOne(id);
     if (!user) {
       throw new NotFoundException('User does not exist!');
@@ -34,13 +34,16 @@ export class UsersController {
 
   //create user
   @Post()
-  async create(@Body() user: User): Promise<User> {
+  async create(@Body() user: UserEntity): Promise<UserEntity> {
     return this.usersService.create(user);
   }
 
   //update user
   @Put(':id')
-  async update(@Param('id') id: number, @Body() user: User): Promise<any> {
+  async update(
+    @Param('id') id: number,
+    @Body() user: UserEntity,
+  ): Promise<any> {
     return this.usersService.update(id, user);
   }
 
