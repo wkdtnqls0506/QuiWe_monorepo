@@ -1,38 +1,33 @@
-import { QuestionEntity } from 'src/question/question.entity';
+import { BaseEntity } from 'src/common/entity/base.entity';
+import { QuestionEntity } from 'src/question/entities/question.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
-export class QuizEntity {
+@Entity('quiz')
+export class QuizEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar')
+  @Column()
   category: string;
 
-  @Column('int')
+  @Column()
   level: number;
 
-  @Column('varchar[]')
-  tags: string[];
-
-  @CreateDateColumn('timestamp')
-  createdAt: Date;
-
-  @UpdateDateColumn('timestamp')
-  updatedAt: Date;
+  @Column()
+  details: string;
 
   @ManyToOne(() => UserEntity, (user) => user.quizzes)
   user: UserEntity;
 
-  @OneToMany(() => QuestionEntity, (question) => question.quiz)
+  @OneToMany(() => QuestionEntity, (question) => question.quiz, {
+    cascade: true,
+  })
   questions: QuestionEntity[];
 }
