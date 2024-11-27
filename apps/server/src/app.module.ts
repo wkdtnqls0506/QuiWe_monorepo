@@ -1,17 +1,24 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import ormconfig from '../ormconfig';
 import { UsersModule } from './user/users.module';
+import { LoggingMiddleware } from './middleware/logging.middleware';
+import ConfigModule from './config';
+import { QuizModule } from './quiz/quiz.module';
+import { QuestionModule } from './question/question.module';
 
 @Module({
   imports: [
+    ConfigModule(),
     TypeOrmModule.forRoot(ormconfig as TypeOrmModuleOptions),
     UsersModule,
+    QuizModule,
+    QuestionModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+  }
+}
