@@ -1,35 +1,28 @@
-import { PortfolioEntity } from 'src/portfolio/entity/portfolio.entity';
+import { BaseEntity } from 'src/common/entity/base.entity';
+import { PortfolioEntity } from 'src/portfolio/entities/portfolio.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   OneToOne,
   JoinColumn,
   OneToMany,
 } from 'typeorm';
 
-@Entity()
-export class UserEntity {
-  @PrimaryGeneratedColumn() // auto increment PK
+@Entity('user')
+export class UserEntity extends BaseEntity {
+  @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar')
+  @Column()
   name: string;
 
-  @Column('varchar')
+  @Column()
   email: string;
 
-  @Column('varchar')
+  @Column()
   password: string;
-
-  @CreateDateColumn('timestamp')
-  createdAt: Date;
-
-  @UpdateDateColumn('timestamp')
-  updatedAt: Date;
 
   @OneToOne(() => PortfolioEntity)
   @JoinColumn() // 1:1 관계에선 필수

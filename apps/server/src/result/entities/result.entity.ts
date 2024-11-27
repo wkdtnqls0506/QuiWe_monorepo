@@ -1,3 +1,4 @@
+import { BaseEntity } from 'src/common/entity/base.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import {
   Column,
@@ -7,21 +8,21 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
-export class ResultEntity {
+@Entity('result')
+export class ResultEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text')
+  @Column()
   answer: string;
 
-  @Column('boolean')
+  @Column()
   result: boolean;
 
-  @Column('text')
+  @Column()
   description: string;
 
-  @Column('text')
+  @Column()
   correctAnswer: string;
 
   @OneToOne(() => QuizEntity)
