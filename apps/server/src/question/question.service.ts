@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionEntity } from './entities/question.entity';
+import { CreateQuizDto } from 'src/quiz/dto/create-quiz.dto';
 
 @Injectable()
 export class QuestionService {
@@ -19,7 +20,7 @@ export class QuestionService {
     });
   }
 
-  async create(createQuizDto: any) {
+  async create(createQuizDto: CreateQuizDto) {
     const { category, details, level } = createQuizDto;
 
     try {
@@ -78,7 +79,7 @@ export class QuestionService {
     - Category: ${category}
     - Details: ${details.join(', ')}
     - Difficulty Level: ${level}
-    - Number of questions: ${numQuestions}
+    - Number of questions: 1
     - Types of questions: Mix of multiple choice, short answer, and essay questions.
 
     The response should be in JSON format, and all answers should be in Korean, even though the request is in English.
