@@ -2,19 +2,23 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import ormconfig from '../ormconfig';
-import { UsersModule } from './user/users.module';
 import { LoggingMiddleware } from './middleware/logging.middleware';
 import ConfigModule from './config';
 import { QuizModule } from './quiz/quiz.module';
 import { QuestionModule } from './question/question.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 
 @Module({
   imports: [
     ConfigModule(),
     TypeOrmModule.forRoot(ormconfig as TypeOrmModuleOptions),
-    UsersModule,
+    UserModule,
     QuizModule,
     QuestionModule,
+    AuthModule,
+    PortfolioModule,
   ],
 })
 export class AppModule implements NestModule {
