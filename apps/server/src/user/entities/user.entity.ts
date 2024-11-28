@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { PortfolioEntity } from 'src/portfolio/entities/portfolio.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
@@ -18,10 +19,11 @@ export class UserEntity extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
+  @Exclude({ toPlainOnly: true })
   password: string;
 
   @OneToOne(() => PortfolioEntity)
