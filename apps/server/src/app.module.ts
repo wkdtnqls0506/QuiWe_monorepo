@@ -9,6 +9,7 @@ import { QuestionModule } from './question/question.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
+import { ResultModule } from './result/result.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PortfolioModule } from './portfolio/portfolio.module';
     QuestionModule,
     AuthModule,
     PortfolioModule,
+    ResultModule,
   ],
 })
 export class AppModule implements NestModule {

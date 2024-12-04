@@ -16,21 +16,18 @@ export class QuizService {
   async create(createQuizDto: CreateQuizDto) {
     const { category, details, level } = createQuizDto;
 
-    // QuizEntity 저장
     const savedQuiz = await this.quizRepository.save({
       category,
       details: details.join(', '),
       level,
     });
 
-    // Quiz 문제 생성 요청
     const generatedQuestions = await this.questionService.create({
       category,
       details,
       level,
     });
 
-    // 생성된 Questions를 DB에 저장
     const questions = generatedQuestions.data.quizzes.map((questionData) => ({
       ...questionData,
       quiz: savedQuiz,
@@ -47,5 +44,12 @@ export class QuizService {
       message: '퀴즈와 문제를 성공적으로 생성했습니다.',
       data: finalQuiz,
     };
+  }
+
+  findOne(id: number) {
+    return this.quizRepository.findOne({
+      where: { id },
+      relations: ['questions'],
+    });
   }
 }

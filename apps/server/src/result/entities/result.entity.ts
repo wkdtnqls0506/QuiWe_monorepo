@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
+import { QuestionEntity } from 'src/question/entities/question.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import {
   Column,
@@ -14,10 +15,10 @@ export class ResultEntity extends BaseEntity {
   id: number;
 
   @Column()
-  answer: string;
+  userAnswer: string;
 
   @Column()
-  result: boolean;
+  isCorrect: boolean;
 
   @Column()
   description: string;
@@ -25,7 +26,10 @@ export class ResultEntity extends BaseEntity {
   @Column()
   correctAnswer: string;
 
-  @OneToOne(() => QuizEntity)
+  @OneToOne(() => QuestionEntity, (question) => question.id, {
+    cascade: true,
+    nullable: false,
+  })
   @JoinColumn()
-  quiz: QuizEntity;
+  question: QuestionEntity; // questionId 생성
 }
