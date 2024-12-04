@@ -79,7 +79,7 @@ export class QuestionService {
     - Category: ${category}
     - Details: ${details.join(', ')}
     - Difficulty Level: ${level}
-    - Number of questions: 1
+    - Number of questions: ${numQuestions}
     - Types of questions: Mix of multiple choice, short answer, and essay questions.
 
     The response should be in JSON format, and all answers should be in Korean, even though the request is in English.
