@@ -1,4 +1,10 @@
-import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateResultDto {
@@ -10,8 +16,10 @@ export class CreateResultDto {
 
 class UserAnswerDto {
   @IsNumber()
+  @IsNotEmpty()
   questionId: number;
 
   @IsString()
+  @IsNotEmpty()
   userAnswer: string;
 }
