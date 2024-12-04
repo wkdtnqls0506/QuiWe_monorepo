@@ -1,6 +1,13 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { ResultEntity } from 'src/result/entities/result.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('question')
 export class QuestionEntity extends BaseEntity {
@@ -18,4 +25,7 @@ export class QuestionEntity extends BaseEntity {
 
   @ManyToOne(() => QuizEntity, (quiz) => quiz.id)
   quiz: QuizEntity; // quizId 생성
+
+  @OneToOne(() => ResultEntity, (result) => result.id)
+  result: ResultEntity;
 }

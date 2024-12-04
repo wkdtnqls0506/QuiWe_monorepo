@@ -26,7 +26,10 @@ export class ResultEntity extends BaseEntity {
   @Column()
   correctAnswer: string;
 
-  @OneToOne(() => QuestionEntity, (question) => question.id)
+  @OneToOne(() => QuestionEntity, (question) => question.id, {
+    cascade: true,
+    nullable: false,
+  })
   @JoinColumn()
   question: QuestionEntity; // questionId 생성
 }
