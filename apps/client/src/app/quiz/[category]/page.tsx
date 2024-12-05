@@ -2,6 +2,7 @@ import CheckLevel from '@/components/Quiz/Category/CheckLevel'
 import DetailInput from '@/components/Quiz/Category/DetailInput'
 import SubmitButton from '@/components/Quiz/Category/SubmitButton'
 import quizCategory from '@/constants/quizCategory'
+import { Suspense } from 'react'
 
 const QuizDetailPage = ({ params }: { params: { category: string } }) => {
   const categoryName = quizCategory.find(
@@ -16,9 +17,15 @@ const QuizDetailPage = ({ params }: { params: { category: string } }) => {
         </div>
       </div>
       <div className="flex flex-col">
-        <DetailInput />
-        <CheckLevel />
-        <SubmitButton />
+        <Suspense>
+          <DetailInput />
+        </Suspense>
+        <Suspense>
+          <CheckLevel />
+        </Suspense>
+        <Suspense>
+          <SubmitButton />
+        </Suspense>
       </div>
     </div>
   )
