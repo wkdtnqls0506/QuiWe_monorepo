@@ -34,7 +34,9 @@ const QuizProblem = ({ quiz, questionRefs }: TQuizProps) => {
       {quiz.map((item, questionIndex) => (
         <div
           key={item.id}
-          ref={(el) => (questionRefs.current[questionIndex] = el)}
+          ref={(el) => {
+            questionRefs.current[questionIndex] = el
+          }}
           className="flex flex-col gap-4 p-8 pl-[100px]"
         >
           <h3 className="text-green-800">{`${questionIndex + 1}. ${item.question}`}</h3>
@@ -42,6 +44,7 @@ const QuizProblem = ({ quiz, questionRefs }: TQuizProps) => {
             <div className="w-[70%] flex flex-col gap-2 px-4">
               {item.options?.map((option, optionIndex) => (
                 <div
+                  key={`${item.id}-${optionIndex}`}
                   className={`cursor-pointer p-4 transition-all duration-300 ease-out hover:bg-green-100 hover:rounded-md
                         ${selectedAnswer?.[questionIndex + 1] === optionIndex + 1 ? 'bg-green-100 rounded' : ''}
                     `}
