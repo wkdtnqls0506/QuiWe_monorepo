@@ -1,0 +1,23 @@
+# 공통
+node_modules/
+dist/
+.env
+*.log
+Dockerfile*
+.dockerignore
+
+# 빌드 및 의존성 관리에 필요한 파일은 제외하지 않음
+!pnpm-workspace.yaml
+!pnpm-lock.yaml
+!package.json
+
+# 서버 
+/apps/server/node_modules/
+/apps/server/dist/
+/apps/server/test/
+/apps/server/.env
+
+# 클라이언트 
+/apps/client/node_modules/
+/apps/client/.next/
+/apps/client/out/
