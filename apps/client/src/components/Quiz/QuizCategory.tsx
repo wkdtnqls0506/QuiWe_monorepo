@@ -1,3 +1,5 @@
+'use client'
+
 import quizCategory from '@/constants/quizCategory'
 import { useSearchParams } from 'next/navigation'
 
