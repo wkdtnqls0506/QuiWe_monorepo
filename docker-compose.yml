@@ -18,18 +18,18 @@ services:
     depends_on:
       - db
 
-  client:
-    build:
-      context: .
-      dockerfile: ./apps/client/Dockerfile # 클라이언트 Dockerfile 경로
-    container_name: QuiWe_Client
-    environment:
-      NODE_ENV: production
-    ports:
-      - '3000:3000'
-    depends_on:
-      - server
-    command: node apps/client/server.js
+  # client:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/client/Dockerfile # 클라이언트 Dockerfile 경로
+  #   container_name: QuiWe_Client
+  #   environment:
+  #     NODE_ENV: production
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - server
+  #   command: node apps/client/server.js
 
   db:
     image: postgres:16.0-alpine
