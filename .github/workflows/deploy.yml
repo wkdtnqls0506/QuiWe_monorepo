@@ -50,11 +50,11 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             # Stop existing container
-            docker stop quiwe || true
-            docker rm quiwe || true
+            sudo docker stop quiwe || true
+            sudo docker rm quiwe || true
 
             # Pull the latest image
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
             # Run the container
-            docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
