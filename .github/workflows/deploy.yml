@@ -39,11 +39,9 @@ jobs:
     needs: build-and-push-to-dockerhub
 
     steps:
-      # 1. Checkout Code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. SSH to EC2 and Deploy
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.9
         with:
