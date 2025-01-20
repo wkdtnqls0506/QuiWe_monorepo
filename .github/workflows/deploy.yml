@@ -28,7 +28,6 @@ jobs:
         run: |
           docker build -f ./apps/server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/quiwe .
 
-      # 4. Push Docker Image to DockerHub
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
