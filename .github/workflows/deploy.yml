@@ -54,7 +54,7 @@ jobs:
 
               # Check if port 4000 is in use and kill the process
               if sudo lsof -i :4000; then
-                  sudo fuser -k 4000/tcp
+                 sudo kill -9 $(sudo lsof -t -i:4000) || true
               fi
 
               # Pull the latest image
