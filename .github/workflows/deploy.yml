@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/#15
 
 jobs:
   build-and-push-to-dockerhub:
