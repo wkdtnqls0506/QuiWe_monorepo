@@ -48,17 +48,13 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            # Stop and remove existing container
-              sudo docker stop quiwe || true
-              sudo docker rm quiwe || true
+            sudo docker stop quiwe || true
+            sudo docker rm quiwe || true
 
-              # Check if port 4000 is in use and kill the process
-              if sudo lsof -i :4000; then
-                 sudo kill -9 $(sudo lsof -t -i:4000) || true
-              fi
+            if sudo lsof -i :4000; then
+               sudo kill -9 $(sudo lsof -t -i:4000) || true
+            fi
 
-              # Pull the latest image
-              sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
-              # Run the container
-              sudo docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
