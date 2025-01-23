@@ -1,4 +1,9 @@
 const HomePage = async () => {
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    console.error('API URL is not defined')
+    return null
+  }
+
   const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quiz/1`)
     .then((res) => {
       if (!res.ok) {
