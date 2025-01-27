@@ -4,7 +4,9 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './exceptions/http.exceptions';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
+
+  // app.setGlobalPrefix('api');
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
@@ -13,8 +15,6 @@ async function bootstrap() {
     .setDescription('QuiWe API description')
     .setVersion('1.0')
     .addServer('http://localhost:4000/', 'Local environment')
-    // .addServer('https://staging.yourapi.com/', 'Staging')
-    // .addServer('https://production.yourapi.com/', 'Production')
     .addTag('Board')
     .build();
 
