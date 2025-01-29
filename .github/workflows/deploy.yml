@@ -58,5 +58,4 @@ jobs:
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
-            cd /home/ubuntu/quiwe
-            sudo docker compose up -d
+            sudo docker compose up -d quiwe
