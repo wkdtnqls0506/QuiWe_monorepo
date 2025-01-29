@@ -25,6 +25,7 @@ jobs:
 
       # 3. Create .env file (로컬에 생성)
       - name: Create .env file
+        working-directory: ./apps/server
         run: |
           echo "PORT=${{ secrets.POSTGRES_PORT }}" > .env
           echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
@@ -36,6 +37,11 @@ jobs:
           echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
           echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
           echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
+      - name: Verify .env file exists (1)
+        working-directory: ./apps/server
+        run: |
+          ls -al
+          cat .env || echo "No .env file found!"
 
       # 4. Build Docker Image
       - name: Build Docker Image
@@ -55,11 +61,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Verify .env file
-        run: cat .env || echo "No .env file found!"
-
-      - name: Check existing files
-        run: ls -al
+      - name: Verify .env file (2)
+        working-directory: ./apps/server
+        run: |
+          ls -al
+          cat .env || echo "No .env file found!"
 
       - name: Upload .env to EC2
         uses: appleboy/scp-action@v0.1.4
@@ -67,7 +73,7 @@ jobs:
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: './.env'
+          source: './apps/server/.env'
           target: '/home/ubuntu/quiwe/.env'
 
   deploy-to-ec2:
