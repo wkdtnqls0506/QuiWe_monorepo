@@ -42,6 +42,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+        # 배포
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.9
         with:
