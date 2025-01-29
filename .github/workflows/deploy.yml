@@ -25,7 +25,6 @@ jobs:
 
       # 3. Create .env file (로컬에 생성)
       - name: Create .env file
-        working-directory: ./quiwe
         run: |
           echo "PORT=${{ secrets.POSTGRES_PORT }}" > .env
           echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
@@ -62,8 +61,8 @@ jobs:
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: './quiwe/.env'
-          target: '~/quiwe/.env'
+          source: '.env'
+          target: '/home/ubuntu/quiwe/.env'
 
   deploy-to-ec2:
     name: Deploy to AWS EC2
@@ -90,4 +89,4 @@ jobs:
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
-            sudo docker run -d --name quiwe --env-file ~/quiwe/.env -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker run -d --name quiwe --env-file /home/ubuntu/quiwe/.env -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
