@@ -45,7 +45,6 @@ jobs:
       # EC2에 .env 파일 업로드 (빌드 후 진행)
       - name: Create .env file
         run: |
-          echo "PORT=${{ secrets.POSTGRES_PORT }}" > .env
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
@@ -63,7 +62,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: '.env'
-          target: '/home/ubuntu/quiwe'
+          target: '/home/ubuntu'
 
   deploy-to-ec2:
     name: Deploy to AWS EC2
