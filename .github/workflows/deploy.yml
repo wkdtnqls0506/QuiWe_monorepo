@@ -51,7 +51,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             sudo docker stop quiwe || true
-            sudo docker rm quiwe || true
 
             if sudo lsof -i :4000; then
                sudo kill -9 $(sudo lsof -t -i:4000) || true
