@@ -23,6 +23,21 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      - name: Create .env file
+        working-directory: ./apps/server
+        run: |
+          echo "PORT=4000" > .env
+          echo "NODE_ENV=production" >> .env
+          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+          echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+          echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
+
       # 3. Build Docker Image
       - name: Build Docker Image
         run: |
@@ -57,4 +72,4 @@ jobs:
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
-            sudo docker run -d --name quiwe --env-file .env -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
