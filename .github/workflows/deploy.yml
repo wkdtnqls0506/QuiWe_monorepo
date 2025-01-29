@@ -56,11 +56,6 @@ jobs:
           echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
           echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
 
-      - name: Verify .env file exists
-        run: |
-          ls -al
-          cat .env || echo "No .env file found!"
-
       - name: Upload .env to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -73,7 +68,7 @@ jobs:
   deploy-to-ec2:
     name: Deploy to AWS EC2
     runs-on: ubuntu-latest
-    needs: upload-env-file
+    needs: [build-and-push-to-dockerhub, upload-env-file]
 
     steps:
       - name: Checkout code
