@@ -23,31 +23,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # 3. Create .env file (로컬에 생성)
-      - name: Create .env file
-        working-directory: ./apps/server
-        run: |
-          echo "PORT=${{ secrets.POSTGRES_PORT }}" > .env
-          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
-          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
-          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
-          echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> .env
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
-          echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
-          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
-          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
-      - name: Verify .env file exists (1)
-        working-directory: ./apps/server
-        run: |
-          ls -al
-          cat .env || echo "No .env file found!"
-
-      # 4. Build Docker Image
+      # 3. Docker 이미지 빌드 (빌드에는 .env 파일이 필요 없음)
       - name: Build Docker Image
         run: |
           docker build -f ./apps/server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/quiwe .
 
+      # 4. Docker 이미지 푸시
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
@@ -61,8 +42,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Verify .env file (2)
-        working-directory: ./apps/server
+      # EC2에 .env 파일 업로드 (빌드 후 진행)
+      - name: Create .env file
+        run: |
+          echo "PORT=${{ secrets.POSTGRES_PORT }}" > .env
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
+          echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+          echo "HASH_ROUNDS=${{ secrets.HASH_ROUNDS }}" >> .env
+          echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
+          echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
+
+      - name: Verify .env file exists
         run: |
           ls -al
           cat .env || echo "No .env file found!"
@@ -73,7 +67,7 @@ jobs:
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: './apps/server/.env'
+          source: '.env'
           target: '/home/ubuntu/quiwe/.env'
 
   deploy-to-ec2:
@@ -85,6 +79,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # EC2에서 Docker 컨테이너 실행
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.9
         with:
