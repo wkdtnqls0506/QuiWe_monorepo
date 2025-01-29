@@ -23,11 +23,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
+      # 3. Create .env file (로컬에 생성)
       - name: Create .env file
         working-directory: ./apps/server
         run: |
-          echo "PORT=4000" > .env
-          echo "NODE_ENV=production" >> .env
+          echo "PORT=${{ secrets.POSTGRES_PORT }}" > .env
           echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> .env
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
@@ -38,7 +38,7 @@ jobs:
           echo "ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}" >> .env
           echo "REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}" >> .env
 
-      # 3. Build Docker Image
+      # 4. Build Docker Image
       - name: Build Docker Image
         run: |
           docker build -f ./apps/server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/quiwe .
@@ -47,10 +47,28 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
+  upload-env-file:
+    name: Upload .env File to EC2
+    runs-on: ubuntu-latest
+    needs: build-and-push-to-dockerhub
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Upload .env to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          source: '.env'
+          target: '~/quiwe/.env'
+
   deploy-to-ec2:
     name: Deploy to AWS EC2
     runs-on: ubuntu-latest
-    needs: build-and-push-to-dockerhub
+    needs: upload-env-file
 
     steps:
       - name: Checkout code
@@ -72,4 +90,4 @@ jobs:
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
-            sudo docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker run -d --name quiwe --env-file ~/quiwe/.env -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
