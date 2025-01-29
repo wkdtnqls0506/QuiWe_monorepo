@@ -68,7 +68,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: '.env'
-          target: '/home/ubuntu/quiwe/.env'
+          target: '/home/ubuntu/quiwe'
 
   deploy-to-ec2:
     name: Deploy to AWS EC2
@@ -96,4 +96,4 @@ jobs:
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
 
-            sudo docker run -d --name quiwe --env-file /home/ubuntu/quiwe/.env -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+            sudo docker run -d --name quiwe -p 4000:4000 ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
