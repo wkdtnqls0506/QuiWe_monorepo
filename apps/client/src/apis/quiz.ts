@@ -1,16 +1,6 @@
-import { TCreateQuiz } from '@/types/quiz.type';
+import { TQuizRequest } from '@/types/quiz.type';
 
-export async function getQuiz() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quiz/1`);
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-
-  return res.json();
-}
-
-export async function createQuiz(quizTypes: TCreateQuiz) {
+export async function createQuiz(quizTypes: TQuizRequest) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quiz`, {
     method: 'POST',
     headers: {
