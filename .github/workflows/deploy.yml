@@ -23,15 +23,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # 3. Docker 이미지 빌드
-      - name: Build Docker Image
-        run: |
-          docker build -f ./apps/server/Dockerfile -t ${{ secrets.DOCKERHUB_USERNAME }}/quiwe .
-
-      # 4. Docker 이미지 푸시
-      - name: Push Docker Image
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
+      # 3. Build and Push Docker Image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./apps/server/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/quiwe:latest
 
   deploy-to-ec2:
     name: Deploy to AWS EC2
@@ -42,22 +41,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-        # 배포
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@v0.1.9
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/quiwe
-            sudo docker stop quiwe || true
-            sudo docker rm quiwe || true
-
-            if sudo lsof -i :4000; then
-               sudo kill -9 $(sudo lsof -t -i:4000) || true
-            fi
-
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe
-
+            export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe:latest
             sudo docker compose up -d
