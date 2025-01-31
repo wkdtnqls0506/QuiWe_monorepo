@@ -20,7 +20,7 @@ export class QuestionEntity extends BaseEntity {
   @Column()
   title: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'simple-json', nullable: true })
   options: string;
 
   @ManyToOne(() => QuizEntity, (quiz) => quiz.id)
