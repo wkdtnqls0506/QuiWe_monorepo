@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/#17
 
 jobs:
   build-and-push-to-dockerhub:
@@ -53,6 +52,8 @@ jobs:
 
             sudo docker stop QuiWe_Server || true
             sudo docker rm QuiWe_Server || true
+
+            sudo docker image prune -a -f
 
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe:latest
             sudo docker compose up -d
