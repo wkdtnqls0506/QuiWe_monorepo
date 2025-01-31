@@ -50,5 +50,9 @@ jobs:
           script: |
             cd /home/ubuntu/quiwe
             export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+
+            sudo docker stop QuiWe_Server || true
+            sudo docker rm QuiWe_Server || true
+
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/quiwe:latest
             sudo docker compose up -d
