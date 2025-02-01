@@ -19,9 +19,7 @@ const SelectQuiz = () => {
 
   return (
     <div className='flex flex-col items-center h-full mt-12 px-4'>
-      <h2 className='font-bold text-green-800'>
-        🥝 관심있는 퀴즈를 풀어보세요!
-      </h2>
+      <h2 className='font-bold text-green-800'>🥝 관심있는 퀴즈를 풀어보세요!</h2>
       <QuizCategory />
       <button
         onClick={handleClick}

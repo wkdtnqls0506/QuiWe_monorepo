@@ -6,9 +6,7 @@ import SubmitButton from '@/components/Quiz/Category/SubmitButton';
 import quizCategory from '@/constants/quizCategory';
 
 const QuizCategoryPage = ({ params }: { params: { category: string } }) => {
-  const categoryName = quizCategory.find(
-    (category) => category.id === params.category
-  )?.name;
+  const categoryName = quizCategory.find((category) => category.id === params.category)?.name;
 
   return (
     <div className='flex flex-col px-32 py-12'>

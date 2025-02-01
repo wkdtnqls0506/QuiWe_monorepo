@@ -22,11 +22,7 @@ const DetailInput = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (
-      inputText !== '' &&
-      e.key === 'Enter' &&
-      e.nativeEvent.isComposing === false
-    ) {
+    if (inputText !== '' && e.key === 'Enter' && e.nativeEvent.isComposing === false) {
       if (search.includes(inputText)) {
         toast('이미 등록된 주제입니다.', {
           icon: '🥝',
@@ -50,9 +46,7 @@ const DetailInput = () => {
 
   return (
     <div className='flex flex-col w-full p-8 border-2 border-dashed border-green-200'>
-      <p className='text-green-800 text-lg font-bold mb-4'>
-        세부 주제 또는 분야를 입력해주세요.
-      </p>
+      <p className='text-green-800 text-lg font-bold mb-4'>세부 주제 또는 분야를 입력해주세요.</p>
       <div className='w-full relative mb-6'>
         <input
           type='text'

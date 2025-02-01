@@ -1,4 +1,3 @@
-import { TQuizProblem } from '@/mock';
 import { TQuestion } from '@/types/quiz.type';
 import React, { useState } from 'react';
 
@@ -8,15 +7,9 @@ type TQuizProps = {
   selectedNumber: number;
 };
 
-const QuizNumber = ({
-  questions,
-  questionRefs,
-  selectedNumber
-}: TQuizProps) => {
+const QuizNumber = ({ questions, questionRefs, selectedNumber }: TQuizProps) => {
   // FIX ME: 전역 상태로 관리되도록 변경해야 함.
-  const [answer, setAnswer] = useState<string[]>(
-    Array(questions.length).fill('')
-  );
+  const [answer, setAnswer] = useState<string[]>(Array(questions.length).fill(''));
 
   const handleClick = (index: number) => {
     const questionElement = questionRefs.current[index - 1];

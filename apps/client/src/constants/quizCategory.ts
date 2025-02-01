@@ -10,7 +10,7 @@ const quizCategory = [
   { id: 'express', name: 'Express' },
   { id: 'nestJS', name: 'Nest.js' },
   { id: 'spring', name: 'Spring/Spring Boot' },
-  { id: 'django', name: 'Django' },
-]
+  { id: 'django', name: 'Django' }
+];
 
-export default quizCategory
+export default quizCategory;

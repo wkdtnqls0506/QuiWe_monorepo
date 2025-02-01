@@ -16,11 +16,7 @@ const CheckLevel = () => {
   return (
     <div className='flex justify-end items-center gap-8 mt-6 h-4 p-4'>
       {level.map((item) => (
-        <label
-          key={item.id}
-          htmlFor={item.id}
-          className='flex items-center gap-2'
-        >
+        <label key={item.id} htmlFor={item.id} className='flex items-center gap-2'>
           <input
             type='radio'
             id={item.id}
