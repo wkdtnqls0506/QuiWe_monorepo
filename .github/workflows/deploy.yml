@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Docker Setup
-        uses: docker/setup-buildx-action@v
+        uses: docker/setup-buildx-action@v3
 
       # 2. Log in to DockerHub
       - name: Log in to DockerHub
