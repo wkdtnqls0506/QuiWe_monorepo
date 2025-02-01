@@ -6,7 +6,7 @@ module.exports = {
       colors: {
         boolean: {
           success: '#0CBC72',
-          error: '#BD2222',
+          error: '#BD2222'
         },
         gray: {
           100: '#F2F2F2',
@@ -17,7 +17,7 @@ module.exports = {
           600: '#9C9C9C',
           700: '#616161',
           800: '#3C3C3C',
-          900: '#1A1A1A',
+          900: '#1A1A1A'
         },
         green: {
           100: '#E8F5E9',
@@ -27,19 +27,19 @@ module.exports = {
           500: '#4CAF50',
           600: '#43A047',
           700: '#388E3C',
-          800: '#2E7D32',
-        },
+          800: '#2E7D32'
+        }
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: 0 },
-          '100%': { opacity: 1 },
-        },
+          '100%': { opacity: 1 }
+        }
       },
       animation: {
-        fadeIn: 'fadeIn 0.5s ease-in-out',
-      },
-    },
+        fadeIn: 'fadeIn 0.5s ease-in-out'
+      }
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};
