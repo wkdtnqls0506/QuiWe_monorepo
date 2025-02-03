@@ -8,10 +8,10 @@ import Timer from './Timer';
 import QuizNumber from './QuizNumber';
 import QuizProblem from './QuizProblem';
 
-const Content = ({ challengeId }: { challengeId: number }) => {
+const Content = ({ quizId }: { quizId: number }) => {
   const { data } = useQuery<TQuiz>({
-    queryKey: ['challenge', challengeId],
-    queryFn: () => getChallengeQuestions(challengeId),
+    queryKey: ['challenge', quizId],
+    queryFn: () => getChallengeQuestions(quizId),
     staleTime: Infinity
   });
 
