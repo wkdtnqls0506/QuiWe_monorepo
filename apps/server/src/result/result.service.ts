@@ -31,10 +31,9 @@ export class ResultService {
     const resultsToSave = [];
 
     for (const question of questions) {
-      console.log(question.id);
       const answers = createResultDto.answers.find(
         (answer) => answer.questionId === question.id,
-      );
+      ) || { userAnswer: '' };
 
       let results;
 
@@ -43,7 +42,7 @@ export class ResultService {
 
         results = await this.getCorrectAnswerMultipleChoice(
           question.title,
-          options.split(','),
+          options,
           answers.userAnswer,
         );
       } else {
