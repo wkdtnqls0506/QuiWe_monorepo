@@ -3,6 +3,9 @@ module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        pretendard: ['var(--font-pretendard)']
+      },
       colors: {
         boolean: {
           success: '#0CBC72',
