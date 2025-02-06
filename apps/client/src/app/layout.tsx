@@ -1,8 +1,8 @@
-import Header from '../components/Header';
+import Header from '@/components/Header';
 import './globals.css';
 import type { Metadata } from 'next';
-import QueryProvider from '../providers/query-provider';
-import { CounterStoreProvider } from '@/providers/counter-store-provider';
+import QueryProvider from '@/providers/query-provider';
+import { AnswerStoreProvider } from '@/providers/userAnswer-store-provider';
 import localFont from 'next/font/local';
 
 export const metadata: Metadata = {
@@ -26,7 +26,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <Header />
-          <CounterStoreProvider>{children}</CounterStoreProvider>
+          <AnswerStoreProvider>{children}</AnswerStoreProvider>
         </QueryProvider>
       </body>
     </html>
