@@ -32,7 +32,7 @@ const QuizProblem = ({ questions, questionRefs }: TQuizProps) => {
             question?.options?.map((option, optionIndex) => (
               <div
                 key={`${question.id}-${optionIndex}`}
-                className={`cursor-pointer p-3 transition-all duration-300 ease-out hover:bg-green-100 hover:rounded-md
+                className={`max-w-[75%] cursor-pointer p-3 transition-all duration-300 ease-out hover:bg-green-100 hover:rounded-md
                   ${
                     answers.find((a) => a.questionId === question.id)?.userAnswer === (optionIndex + 1).toString()
                       ? 'bg-green-200 rounded'
