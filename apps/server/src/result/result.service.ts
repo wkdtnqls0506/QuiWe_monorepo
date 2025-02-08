@@ -31,6 +31,14 @@ export class ResultService {
     const resultsToSave = [];
 
     for (const question of questions) {
+      const existingResult = await this.resultRepository.findOne({
+        where: { question: { id: question.id } },
+      });
+
+      if (existingResult) {
+        continue;
+      }
+
       const answers = createResultDto.answers.find(
         (answer) => answer.questionId === question.id,
       ) || { userAnswer: '' };
@@ -52,7 +60,7 @@ export class ResultService {
         );
       }
       resultsToSave.push({
-        question: question.id,
+        questionId: question.id,
         userAnswer: answers.userAnswer,
         isCorrect: results.isCorrect,
         correctAnswer: results.correctAnswer,
