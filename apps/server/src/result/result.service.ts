@@ -59,8 +59,9 @@ export class ResultService {
           answers.userAnswer,
         );
       }
+
       resultsToSave.push({
-        questionId: question.id,
+        question: question,
         userAnswer: answers.userAnswer,
         isCorrect: results.isCorrect,
         correctAnswer: results.correctAnswer,
@@ -69,6 +70,25 @@ export class ResultService {
     }
 
     return await this.resultRepository.save(resultsToSave);
+  }
+
+  async findOne(quizId: number) {
+    const results = await this.resultRepository.find({
+      where: { question: { quiz: { id: quizId } } },
+      relations: ['question'],
+    });
+
+    return {
+      quizId: quizId,
+      questions: results.map((result) => ({
+        questionId: result.question.id,
+        title: result.question.title,
+        userAnswer: result.userAnswer,
+        isCorrect: result.isCorrect,
+        description: result.description,
+        correctAnswer: result.correctAnswer,
+      })),
+    };
   }
 
   async getCorrectAnswerMultipleChoice(
