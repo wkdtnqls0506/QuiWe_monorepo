@@ -12,11 +12,9 @@ export type QuestionType = 'multiple_choice' | 'short_answer' | 'essay';
 export type TQuestion = {
   id: number;
   createdAt: string;
-  updatedAt: string;
-  version: number;
   type: QuestionType;
   title: string;
-  options?: string[];
+  options?: string[] | null;
 };
 
 // 전체 퀴즈 타입
@@ -27,6 +25,5 @@ export type TQuiz = {
   details: string;
   version: number;
   createdAt: string;
-  updatedAt: string;
   questions: TQuestion[];
 };
