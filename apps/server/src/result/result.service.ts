@@ -7,6 +7,8 @@ import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 import { ResultEntity } from './entities/result.entity';
 
+// TODO: 반환값에 대한 타입 선언해주기
+
 @Injectable()
 export class ResultService {
   private readonly openai: OpenAI;
@@ -78,17 +80,7 @@ export class ResultService {
       relations: ['question'],
     });
 
-    return {
-      quizId: quizId,
-      questions: results.map((result) => ({
-        questionId: result.question.id,
-        title: result.question.title,
-        userAnswer: result.userAnswer,
-        isCorrect: result.isCorrect,
-        description: result.description,
-        correctAnswer: result.correctAnswer,
-      })),
-    };
+    return { results };
   }
 
   async getCorrectAnswerMultipleChoice(
