@@ -5,11 +5,14 @@ import {
   Param,
   ParseIntPipe,
   Get,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
 
 @Controller('result')
+@UseInterceptors(ClassSerializerInterceptor)
 export class ResultController {
   constructor(private readonly resultService: ResultService) {}
 
