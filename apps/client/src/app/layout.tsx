@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import QueryProvider from '@/providers/query-provider';
 import { AnswerStoreProvider } from '@/providers/userAnswer-store-provider';
 import localFont from 'next/font/local';
+import { ResultStoreProvider } from '@/providers/result-store-provider';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <Header />
-          <AnswerStoreProvider>{children}</AnswerStoreProvider>
+          <AnswerStoreProvider>
+            <ResultStoreProvider>{children}</ResultStoreProvider>
+          </AnswerStoreProvider>
         </QueryProvider>
       </body>
     </html>
