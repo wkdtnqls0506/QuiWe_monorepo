@@ -1,6 +1,7 @@
 'use client';
 
 import { getResult } from '@/apis/result';
+import { TResultResponse } from '@/types/result.type';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -19,7 +20,7 @@ const TitleList = ({ quizId }: { quizId: number }) => {
         <span className='text-green-600 font-bold'>09</span> / 15
       </p>
       <ul className='flex flex-col gap-2 p-4 bg-white shadow-lg rounded-xl border'>
-        {data?.map((result: any, index: number) => (
+        {data?.results?.map((result: TResultResponse, index: number) => (
           <li
             key={index}
             className={`border-b border-gray-300 pb-2 px-3 py-2 rounded-md transition cursor-pointer ${
