@@ -1,16 +1,26 @@
 'use client';
 
 import { getResult } from '@/apis/result';
+import { useResultStore } from '@/providers/result-store-provider';
 import { TResultResponse } from '@/types/result.type';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const TitleList = ({ quizId }: { quizId: number }) => {
   const { data } = useQuery({
     queryKey: ['result', quizId],
     queryFn: () => getResult(quizId),
-    staleTime: 5000 // TODO: Infinity로 변경
+    staleTime: 5000, // TODO: Infinity로 변경
+    refetchOnMount: true
   });
+
+  const { resultId, setResultId } = useResultStore((state) => state);
+
+  useEffect(() => {
+    if (data.results && resultId === 1) {
+      setResultId(data.results[0].id);
+    }
+  }, []);
 
   const [isClickedQuestion, setIsClickedQuestion] = useState(1);
 
@@ -22,13 +32,16 @@ const TitleList = ({ quizId }: { quizId: number }) => {
       <ul className='flex flex-col gap-2 p-4 bg-white shadow-lg rounded-xl border'>
         {data?.results?.map((result: TResultResponse, index: number) => (
           <li
-            key={index}
+            key={result.id}
             className={`border-b border-gray-300 pb-2 px-3 py-2 rounded-md transition cursor-pointer ${
               index + 1 === isClickedQuestion
                 ? 'bg-green-100 text-green-600 font-semibold border-l-4 border-green-500'
                 : 'hover:bg-gray-100'
             }`}
-            onClick={() => setIsClickedQuestion(index + 1)}
+            onClick={() => {
+              setIsClickedQuestion(index + 1);
+              setResultId(result.id);
+            }}
           >
             {index + 1}. {result.question.title}
           </li>
