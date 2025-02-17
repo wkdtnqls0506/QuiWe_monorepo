@@ -14,35 +14,48 @@ const Description = ({ quizId }: { quizId: number }) => {
     refetchOnMount: true
   });
 
+  const [isExplanationVisible, setIsExplanationVisible] = useState(false);
+
   const resultId = useResultStore((state) => state.resultId);
   const resultData = data?.results?.find((result: TResultResponse) => result.id === resultId);
 
-  const [isExplanationVisible, setIsExplanationVisible] = useState(false);
+  if (!resultData) {
+    return <div className='text-gray-500'>결과를 불러오는 중입니다...</div>;
+  }
+
+  const { question, userAnswer, correctAnswer, description, isCorrect } = resultData;
+
+  const userOptionSelect = question.options?.find((option: string) => {
+    return userAnswer === option;
+  });
 
   return (
     <div className='mt-10 w-3/4 flex flex-col gap-8 bg-white px-10 py-8 shadow-md rounded-lg'>
-      <h3 className='text-2xl font-bold text-gray-900'>💡 {resultData?.question.title}</h3>
-      {resultData?.question?.options ? (
+      <h3 className='text-2xl font-bold text-gray-900'>💡 {question.title}</h3>
+      {question.options ? (
         <ul className='flex flex-col gap-4'>
-          {resultData?.question?.options.map((option: string, index: number) => {
-            const isSelected = resultData.userAnswer === option;
-            const isCorrect = option === resultData.correctAnswer;
+          {question.options.map((option: string, index: number) => {
+            const isUserSelected = option === userOptionSelect;
+            const isOptionCorrect = option === correctAnswer;
+            let optionStyle;
+
+            if (isUserSelected) {
+              optionStyle = isCorrect
+                ? 'bg-green-100 border-green-500 text-green-700 font-bold'
+                : 'bg-red-100 border-red-500 text-red-700 font-bold';
+            } else if (!isUserSelected && !isCorrect && isOptionCorrect) {
+              optionStyle = 'bg-green-100 border-green-500 text-green-700 font-bold';
+            }
+
             return (
               <li
                 key={option}
-                className={`flex items-center gap-3 text-lg px-5 py-4 rounded-lg border transition-all cursor-pointer 
-                ${
-                  isSelected
-                    ? isCorrect
-                      ? 'bg-green-100 border-green-500 text-green-700 font-bold'
-                      : 'bg-red-100 border-red-500 text-red-700 font-bold'
-                    : 'bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-50'
-                }`}
+                className={`flex items-center gap-3 text-lg px-5 py-4 rounded-lg border transition-all cursor-pointer bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-50 ${optionStyle}`}
               >
                 <span className='w-8 h-8 flex items-center justify-center font-semibold text-base bg-gray-300 text-white rounded-full'>
                   {index + 1}
                 </span>
-                {option}
+                <span>{option}</span>
               </li>
             );
           })}
@@ -52,12 +65,12 @@ const Description = ({ quizId }: { quizId: number }) => {
           <p className='text-gray-600 text-sm font-medium'>📝 사용자의 답변</p>
           <p
             className={`text-lg font-semibold px-4 py-3 rounded-md ${
-              resultData?.userAnswer === resultData?.correctAnswer
+              userAnswer === correctAnswer
                 ? 'bg-green-100 text-green-700 border border-green-400'
                 : 'bg-red-100 text-red-700 border border-red-400'
             }`}
           >
-            {resultData?.userAnswer}
+            {userAnswer}
           </p>
         </div>
       )}
@@ -71,10 +84,10 @@ const Description = ({ quizId }: { quizId: number }) => {
             isExplanationVisible ? 'opacity-100' : 'opacity-30'
           }`}
         >
-          {resultData?.description}
+          {description}
           <br />
           <br />
-          <span className='font-semibold text-gray-900'>{resultData?.correctAnswer}</span>
+          <span className='font-semibold text-gray-900'>{correctAnswer}</span>
         </p>
         {!isExplanationVisible && (
           <div className='absolute inset-0 flex items-center justify-center bg-white/70'>
