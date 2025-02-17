@@ -1,10 +1,11 @@
 import Header from '@/components/Header';
 import './globals.css';
 import type { Metadata } from 'next';
+import localFont from 'next/font/local';
 import QueryProvider from '@/providers/query-provider';
 import { AnswerStoreProvider } from '@/providers/userAnswer-store-provider';
-import localFont from 'next/font/local';
 import { ResultStoreProvider } from '@/providers/result-store-provider';
+import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-provider';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -28,7 +29,9 @@ export default function RootLayout({
         <QueryProvider>
           <Header />
           <AnswerStoreProvider>
-            <ResultStoreProvider>{children}</ResultStoreProvider>
+            <ResultStoreProvider>
+              <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
+            </ResultStoreProvider>
           </AnswerStoreProvider>
         </QueryProvider>
       </body>
