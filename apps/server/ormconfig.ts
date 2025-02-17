@@ -22,7 +22,7 @@ export default {
     ResultEntity,
     PortfolioEntity,
   ],
-  migrataions: [__dirname + 'database/migrations/*.ts'],
+  migrations: [__dirname + 'database/migrations/*.ts'],
   migrationsTableName: 'migrations',
   synchronize: true,
 };

@@ -1,5 +1,5 @@
+import { useAnswerStore } from '@/providers/userAnswer-store-provider';
 import { TQuestion } from '@/types/quiz.type';
-import { useState } from 'react';
 
 type TQuizProps = {
   questions: TQuestion[];
@@ -7,23 +7,14 @@ type TQuizProps = {
 };
 
 const QuizProblem = ({ questions, questionRefs }: TQuizProps) => {
-  // 전역 상태로 관리 필요 (FIX ME)
-  const [selectedAnswer, setSelectedAnswer] = useState<{
-    [key: number]: number | string;
-  }>({});
+  const { answers, setAnswers } = useAnswerStore((state) => state);
 
-  const handleClick = (questionNumber: number, optionNumber: number) => {
-    setSelectedAnswer((prevState) => ({
-      ...prevState,
-      [questionNumber]: optionNumber
-    }));
+  const handleClick = (questionId: number, questionTitle: string) => {
+    setAnswers(questionId, questionTitle);
   };
 
-  const handleInputChange = (questionNumber: number, event: React.ChangeEvent<HTMLInputElement | undefined>) => {
-    setSelectedAnswer((prev) => ({
-      ...prev,
-      [questionNumber]: event.target.value
-    }));
+  const handleInputChange = (questionId: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    setAnswers(questionId, event.target.value);
   };
 
   return (
@@ -41,10 +32,14 @@ const QuizProblem = ({ questions, questionRefs }: TQuizProps) => {
             question?.options?.map((option, optionIndex) => (
               <div
                 key={`${question.id}-${optionIndex}`}
-                className={`cursor-pointer p-3 transition-all duration-300 ease-out hover:bg-green-100 hover:rounded-md
-                  ${selectedAnswer?.[questionIndex + 1] === optionIndex + 1 ? 'bg-green-200 rounded' : ''}
+                className={`max-w-[75%] cursor-pointer p-3 transition-all duration-300 ease-out hover:bg-green-100 hover:rounded-md
+                  ${
+                    answers.find((a) => a.questionId === question.id)?.userAnswer === option
+                      ? 'bg-green-200 rounded'
+                      : ''
+                  }
                 `}
-                onClick={() => handleClick(questionIndex + 1, optionIndex + 1)}
+                onClick={() => handleClick(question.id, question.options?.[optionIndex] ?? '')}
               >
                 {`${optionIndex + 1}) ${option}`}
               </div>
@@ -55,7 +50,8 @@ const QuizProblem = ({ questions, questionRefs }: TQuizProps) => {
                 type='text'
                 required
                 placeholder='정답을 입력해주세요'
-                onChange={(event) => handleInputChange(questionIndex + 1, event)}
+                value={answers.find((a) => a.questionId === question.id)?.userAnswer || ''}
+                onChange={(event) => handleInputChange(question.id, event)}
                 className='w-full text-gray-900 border border-gray-500 p-3 rounded-md placeholder:text-gray-500 focus:outline-none focus:border-2 focus:border-green-700'
               />
             </div>

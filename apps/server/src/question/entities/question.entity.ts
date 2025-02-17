@@ -26,6 +26,6 @@ export class QuestionEntity extends BaseEntity {
   @ManyToOne(() => QuizEntity, (quiz) => quiz.id)
   quiz: QuizEntity; // quizId 생성
 
-  @OneToOne(() => ResultEntity, (result) => result.id)
+  @OneToOne(() => ResultEntity, (result) => result.question)
   result: ResultEntity;
 }

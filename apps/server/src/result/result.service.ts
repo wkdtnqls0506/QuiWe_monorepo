@@ -7,6 +7,8 @@ import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 import { ResultEntity } from './entities/result.entity';
 
+// TODO: 반환값에 대한 타입 선언해주기
+
 @Injectable()
 export class ResultService {
   private readonly openai: OpenAI;
@@ -31,6 +33,14 @@ export class ResultService {
     const resultsToSave = [];
 
     for (const question of questions) {
+      const existingResult = await this.resultRepository.findOne({
+        where: { question: { id: question.id } },
+      });
+
+      if (existingResult) {
+        continue;
+      }
+
       const answers = createResultDto.answers.find(
         (answer) => answer.questionId === question.id,
       ) || { userAnswer: '' };
@@ -51,8 +61,9 @@ export class ResultService {
           answers.userAnswer,
         );
       }
+
       resultsToSave.push({
-        question: question.id,
+        question: question,
         userAnswer: answers.userAnswer,
         isCorrect: results.isCorrect,
         correctAnswer: results.correctAnswer,
@@ -61,6 +72,15 @@ export class ResultService {
     }
 
     return await this.resultRepository.save(resultsToSave);
+  }
+
+  async findOne(quizId: number) {
+    const results = await this.resultRepository.find({
+      where: { question: { quiz: { id: quizId } } },
+      relations: ['question'],
+    });
+
+    return { results };
   }
 
   async getCorrectAnswerMultipleChoice(

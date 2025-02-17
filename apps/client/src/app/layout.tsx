@@ -1,9 +1,11 @@
-import Header from '../components/Header';
+import Header from '@/components/Header';
 import './globals.css';
 import type { Metadata } from 'next';
-import QueryProvider from '../providers/query-provider';
-import { CounterStoreProvider } from '@/providers/counter-store-provider';
 import localFont from 'next/font/local';
+import QueryProvider from '@/providers/query-provider';
+import { AnswerStoreProvider } from '@/providers/userAnswer-store-provider';
+import { ResultStoreProvider } from '@/providers/result-store-provider';
+import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-provider';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -26,7 +28,11 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <Header />
-          <CounterStoreProvider>{children}</CounterStoreProvider>
+          <AnswerStoreProvider>
+            <ResultStoreProvider>
+              <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
+            </ResultStoreProvider>
+          </AnswerStoreProvider>
         </QueryProvider>
       </body>
     </html>
