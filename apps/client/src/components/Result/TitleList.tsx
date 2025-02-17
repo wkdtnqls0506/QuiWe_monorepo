@@ -26,10 +26,15 @@ const TitleList = ({ quizId }: { quizId: number }) => {
 
   const [isClickedQuestion, setIsClickedQuestion] = useState(1);
 
+  const correctCount = data.results.filter((result: TResultResponse) => result.isCorrect).length;
+
   return (
     <div className='w-1/4'>
       <p className='font-semibold text-lg text-gray-700 mb-4'>
-        <span className='text-green-600 font-bold'>09</span> / 15
+        <span className='text-green-600 font-bold'>
+          {correctCount < 10 ? String(correctCount).padStart(2, '0') : correctCount}
+        </span>{' '}
+        / {data.results.length}
       </p>
       <ul className='flex flex-col gap-2 p-4 bg-white shadow-lg rounded-xl border'>
         {data?.results?.map((result: TResultResponse, index: number) => (

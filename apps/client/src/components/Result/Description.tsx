@@ -30,7 +30,7 @@ const Description = ({ quizId }: { quizId: number }) => {
   });
 
   return (
-    <div className='mt-10 w-3/4 flex flex-col gap-8 bg-white px-10 py-8 shadow-md rounded-lg'>
+    <div className='h-3/4 sticky top-24 mt-10 w-3/4 flex flex-col gap-8 bg-white px-10 py-8 shadow-md rounded-lg'>
       <h3 className='text-2xl font-bold text-gray-900'>💡 {question.title}</h3>
       {question.options ? (
         <ul className='flex flex-col gap-4'>
