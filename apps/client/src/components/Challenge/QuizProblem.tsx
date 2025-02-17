@@ -9,8 +9,8 @@ type TQuizProps = {
 const QuizProblem = ({ questions, questionRefs }: TQuizProps) => {
   const { answers, setAnswers } = useAnswerStore((state) => state);
 
-  const handleClick = (questionId: number, optionNumber: number) => {
-    setAnswers(questionId, optionNumber.toString());
+  const handleClick = (questionId: number, questionTitle: string) => {
+    setAnswers(questionId, questionTitle);
   };
 
   const handleInputChange = (questionId: number, event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,12 +34,12 @@ const QuizProblem = ({ questions, questionRefs }: TQuizProps) => {
                 key={`${question.id}-${optionIndex}`}
                 className={`max-w-[75%] cursor-pointer p-3 transition-all duration-300 ease-out hover:bg-green-100 hover:rounded-md
                   ${
-                    answers.find((a) => a.questionId === question.id)?.userAnswer === (optionIndex + 1).toString()
+                    answers.find((a) => a.questionId === question.id)?.userAnswer === option
                       ? 'bg-green-200 rounded'
                       : ''
                   }
                 `}
-                onClick={() => handleClick(question.id, optionIndex + 1)}
+                onClick={() => handleClick(question.id, question.options?.[optionIndex] ?? '')}
               >
                 {`${optionIndex + 1}) ${option}`}
               </div>
