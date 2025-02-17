@@ -1,10 +1,10 @@
 'use client';
 
 import { getResult } from '@/apis/result';
+import { useExplanationVisibleStore } from '@/providers/explanationVisible-provider';
 import { useResultStore } from '@/providers/result-store-provider';
 import { TResultResponse } from '@/types/result.type';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 
 const Description = ({ quizId }: { quizId: number }) => {
   const { data } = useQuery({
@@ -14,7 +14,7 @@ const Description = ({ quizId }: { quizId: number }) => {
     refetchOnMount: true
   });
 
-  const [isExplanationVisible, setIsExplanationVisible] = useState(false);
+  const { isExplanationVisible, setIsExplanationVisible } = useExplanationVisibleStore((state) => state);
 
   const resultId = useResultStore((state) => state.resultId);
   const resultData = data?.results?.find((result: TResultResponse) => result.id === resultId);
@@ -50,7 +50,7 @@ const Description = ({ quizId }: { quizId: number }) => {
             return (
               <li
                 key={option}
-                className={`flex items-center gap-3 text-lg px-5 py-4 rounded-lg border transition-all cursor-pointer bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-50 ${optionStyle}`}
+                className={`flex items-center gap-3 text-lg px-5 py-4 rounded-lg border transition-all cursor-not-allowed bg-gray-100 border-gray-300 text-gray-800 ${optionStyle}`}
               >
                 <span className='w-8 h-8 flex items-center justify-center font-semibold text-base bg-gray-300 text-white rounded-full'>
                   {index + 1}

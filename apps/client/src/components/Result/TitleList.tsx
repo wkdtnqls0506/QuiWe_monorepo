@@ -1,6 +1,7 @@
 'use client';
 
 import { getResult } from '@/apis/result';
+import { useExplanationVisibleStore } from '@/providers/explanationVisible-provider';
 import { useResultStore } from '@/providers/result-store-provider';
 import { TResultResponse } from '@/types/result.type';
 import { useQuery } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ const TitleList = ({ quizId }: { quizId: number }) => {
   });
 
   const { resultId, setResultId } = useResultStore((state) => state);
+  const { setIsExplanationVisible } = useExplanationVisibleStore((state) => state);
 
   useEffect(() => {
     if (data.results && resultId === 1) {
@@ -41,6 +43,7 @@ const TitleList = ({ quizId }: { quizId: number }) => {
             onClick={() => {
               setIsClickedQuestion(index + 1);
               setResultId(result.id);
+              setIsExplanationVisible(false);
             }}
           >
             {index + 1}. {result.question.title}
