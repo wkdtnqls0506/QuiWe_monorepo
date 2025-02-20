@@ -7,10 +7,10 @@ import { ConfigService } from '@nestjs/config';
 export class JwtKakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
   constructor(private readonly configService: ConfigService) {
     super({
-      clientID: configService.get('KAKAO_ID'),
-      clientSecret: configService.get('KAKAO_SECRET'),
-      callbackURL: configService.get('KAKAO_CALLBACK_URL'),
-      // scope: ["account_email", "profile_nickname"],
+      clientID: configService.get<string>('KAKAO_ID'),
+      clientSecret: configService.get<string>('KAKAO_SECRET'),
+      callbackURL: configService.get<string>('KAKAO_CALLBACK_URL'),
+      scope: ['account_email'],
     });
   }
 
