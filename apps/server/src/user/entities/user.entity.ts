@@ -22,7 +22,7 @@ export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
   password: string;
 
