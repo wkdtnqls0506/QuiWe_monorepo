@@ -1,7 +1,15 @@
-import { Controller, Get, Query, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { OauthService } from './oauth.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('oauth')
 export class OauthController {
@@ -13,16 +21,11 @@ export class OauthController {
 
   @Get('kakao/callback')
   async kakaoLoginCallback(@Query('code') code: string, @Res() res: Response) {
-    try {
-      const { accessToken } = await this.oAuthService.kakaoLogin(code);
+    return this.oAuthService.kakaoLogin(code, res);
+  }
 
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-      });
-
-      return res.redirect(`${process.env.CLIENT_CALLBACK_URI}`);
-    } catch (error) {
-      return res.status(500).json({ message: '카카오 로그인 실패' });
-    }
+  @Post('kakao/logout')
+  async kakaoLogout(@Req() req: Request, @Res() res: Response) {
+    return this.oAuthService.kakaoLogout(req, res);
   }
 }
