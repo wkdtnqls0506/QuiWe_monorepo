@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
+import { Request } from 'express';
+import axios from 'axios';
 
 @Injectable()
 export class UserService {
@@ -12,43 +12,31 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
-  }
+  async findMe(req: Request) {
+    const accessToken = req.cookies['accessToken'];
 
-  findAll() {
-    return this.userRepository.find();
-  }
+    const userResponse = await axios.get('https://kapi.kakao.com/v2/user/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
 
-  async findOne(id: number) {
-    const user = await this.userRepository.findOne({
-      where: { id },
+    const kakaoUser = userResponse.data;
+
+    if (!kakaoUser.kakao_account.email) {
+      throw new Error('카카오 계정에서 이메일을 제공하지 않습니다.');
+    }
+
+    let user = await this.userRepository.findOne({
+      where: { email: kakaoUser.kakao_account.email },
     });
 
     if (!user) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
+      user = this.userRepository.create({
+        email: kakaoUser.kakao_account.email,
+        name: kakaoUser.properties.nickname,
+      });
+      user = await this.userRepository.save(user);
     }
 
     return user;
-  }
-
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({
-      where: { id },
-    });
-
-    if (!user) {
-      throw new NotFoundException('존재하지 않는 사용자입니다.');
-    }
-
-    await this.userRepository.update({ id }, updateUserDto);
-
-    return this.userRepository.findOne({
-      where: { id },
-    });
-  }
-
-  remove(id: number) {
-    return this.userRepository.delete(id);
   }
 }
