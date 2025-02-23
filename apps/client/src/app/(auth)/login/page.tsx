@@ -2,15 +2,21 @@
 
 import kakao_logo from 'public/kakao_logo.svg?url';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const handleKakaoLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_KAKAO_LOGIN_URL}`;
+  };
+
   return (
     <div className='flex min-h-[715px] items-center justify-center bg-gray-100 bg-gradient-to-b from-green-200 to-green-100'>
       <div className='w-full max-w-xl p-10 bg-white rounded-lg shadow-lg text-center'>
         <h1 className='text-2xl font-bold text-gray-800'>QUIWE에 오신 것을 환영합니다</h1>
         <p className='text-gray-600 mt-2'>간편하게 카카오 계정으로 로그인하세요.</p>
-        <button className='mt-6 w-full flex items-center justify-center gap-2 bg-[#FEE500] text-black py-3 rounded-lg font-semibold hover:bg-yellow-300 transition'>
+        <button
+          className='mt-6 w-full flex items-center justify-center gap-2 bg-[#FEE500] text-black py-3 rounded-lg font-semibold hover:bg-yellow-300 transition'
+          onClick={handleKakaoLogin}
+        >
           <Image src={kakao_logo} alt='카카오 로고' width={24} height={24} />
           카카오 로그인
         </button>
