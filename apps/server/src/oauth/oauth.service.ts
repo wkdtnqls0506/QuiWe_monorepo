@@ -1,19 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class OauthService {
-  constructor(
-    private readonly jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  constructor() {}
 
-  async kakaoLogin(code: string) {
+  async kakaoLogin(code: string, res: Response) {
     try {
       const tokenResponse = await axios.post(
         'https://kauth.kakao.com/oauth/token',
@@ -29,37 +22,46 @@ export class OauthService {
 
       const accessToken = tokenResponse.data.access_token;
 
-      const userResponse = await axios.get(
-        'https://kapi.kakao.com/v2/user/me',
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+      });
+
+      return res.redirect(`${process.env.CLIENT_CALLBACK_URI}`);
+    } catch (error) {
+      throw new InternalServerErrorException('카카오 로그인 처리 중 오류 발생');
+    }
+  }
+
+  async kakaoLogout(req: Request, res: Response) {
+    try {
+      const accessToken = req.cookies['accessToken'];
+
+      if (!accessToken) {
+        return res.status(400).json({ message: '로그인 상태가 아닙니다.' });
+      }
+
+      const kakaoResponse = await axios.post(
+        'https://kapi.kakao.com/v1/user/logout',
+        null,
         {
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
       );
 
-      const kakaoUser = userResponse.data;
+      res.clearCookie('accessToken', { httpOnly: true });
 
-      if (!kakaoUser.kakao_account.email) {
-        throw new Error('카카오 계정에서 이메일을 제공하지 않습니다.');
-      }
-
-      let user = await this.userRepository.findOne({
-        where: { email: kakaoUser.kakao_account.email },
+      return res.status(200).json({
+        message: '카카오 로그아웃 성공',
+        userId: kakaoResponse.data.id,
       });
-
-      if (!user) {
-        user = this.userRepository.create({
-          email: kakaoUser.kakao_account.email,
-          name: kakaoUser.properties.nickname,
-        });
-        user = await this.userRepository.save(user);
-      }
-
-      const payload = { sub: user.id, email: user.email, name: user.name };
-      const jwtToken = this.jwtService.sign(payload);
-
-      return { accessToken: jwtToken, user };
     } catch (error) {
-      throw new InternalServerErrorException('카카오 로그인 처리 중 오류 발생');
+      return res.status(500).json({
+        message: '카카오 로그아웃 처리 중 오류 발생',
+        error: error.response.data,
+      });
     }
   }
 }
