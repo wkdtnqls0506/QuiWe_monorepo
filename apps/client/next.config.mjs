@@ -14,7 +14,10 @@ const nextConfig = {
 
     return config;
   },
-  output: 'standalone'
+  output: 'standalone',
+  images: {
+    domains: ['k.kakaocdn.net']
+  }
 };
 
 export default nextConfig;
