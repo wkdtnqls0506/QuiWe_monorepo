@@ -1,19 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Request, Response } from 'express';
-import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class OauthService {
-  constructor(
-    private readonly jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  constructor() {}
 
   async kakaoLogin(code: string, res: Response) {
     try {
