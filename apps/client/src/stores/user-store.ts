@@ -5,7 +5,7 @@ export type UserState = TUserResponse | null;
 
 export type UserAction = {
   setUser: (user: TUserResponse) => void;
-  logout: () => void;
+  setLogout: () => void;
 };
 
 export type UserStore = { user: UserState } & UserAction;
@@ -16,6 +16,6 @@ export const createUserStore = (initState: UserState = defaultInitState) => {
   return createStore<UserStore>((set) => ({
     user: initState,
     setUser: (user) => set({ user }),
-    logout: () => set({ user: null })
+    setLogout: () => set({ user: null })
   }));
 };
