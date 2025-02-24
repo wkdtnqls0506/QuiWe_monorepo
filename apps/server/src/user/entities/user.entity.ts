@@ -22,6 +22,9 @@ export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column()
+  profileImage: string;
+
   @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
   password: string;

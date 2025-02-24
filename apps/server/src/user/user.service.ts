@@ -33,6 +33,7 @@ export class UserService {
       user = this.userRepository.create({
         email: kakaoUser.kakao_account.email,
         name: kakaoUser.properties.nickname,
+        profileImage: kakaoUser.properties.profile_image,
       });
       user = await this.userRepository.save(user);
     }
