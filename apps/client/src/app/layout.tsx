@@ -6,6 +6,7 @@ import QueryProvider from '@/providers/query-provider';
 import { AnswerStoreProvider } from '@/providers/userAnswer-store-provider';
 import { ResultStoreProvider } from '@/providers/result-store-provider';
 import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-provider';
+import { UserStoreProvider } from '@/providers/user-provider';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -27,12 +28,14 @@ export default function RootLayout({
     <html lang='en' className={`${pretendard.variable} font-pretendard`}>
       <body>
         <QueryProvider>
-          <Header />
-          <AnswerStoreProvider>
-            <ResultStoreProvider>
-              <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
-            </ResultStoreProvider>
-          </AnswerStoreProvider>
+          <UserStoreProvider>
+            <Header />
+            <AnswerStoreProvider>
+              <ResultStoreProvider>
+                <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
+              </ResultStoreProvider>
+            </AnswerStoreProvider>
+          </UserStoreProvider>
         </QueryProvider>
       </body>
     </html>
