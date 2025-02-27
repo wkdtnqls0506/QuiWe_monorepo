@@ -4,16 +4,18 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
 import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { UserService } from './user.service';
 
 @Controller('user')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
   @Get('me')
+  @UseGuards(AuthGuard('access'))
   findMe(@Req() req: Request) {
     return this.userService.findMe(req);
   }
