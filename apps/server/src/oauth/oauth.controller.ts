@@ -9,7 +9,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { OauthService } from './oauth.service';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
 
 @Controller('oauth')
 export class OauthController {
@@ -25,7 +26,11 @@ export class OauthController {
   }
 
   @Post('kakao/logout')
-  async kakaoLogout(@Req() req: Request, @Res() res: Response) {
-    return this.oAuthService.kakaoLogout(req, res);
+  @UseGuards(AuthGuard('access'))
+  async kakaoLogout(
+    @Req() reqUser: { user: JwtPayload },
+    @Res() res: Response,
+  ) {
+    return this.oAuthService.kakaoLogout(reqUser, res);
   }
 }
