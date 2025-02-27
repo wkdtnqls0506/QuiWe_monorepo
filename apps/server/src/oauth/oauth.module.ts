@@ -7,6 +7,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { OauthController } from './oauth.controller';
 import { OauthService } from './oauth.service';
 import { JwtKakaoStrategy } from './strategy/jwt.kakao.strategy';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,10 +17,10 @@ import { JwtKakaoStrategy } from './strategy/jwt.kakao.strategy';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '7d' }, // TODO: 변경 필요
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
     ConfigModule,
   ],
   controllers: [OauthController],

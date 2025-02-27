@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { PortfolioEntity } from 'src/portfolio/entities/portfolio.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
@@ -25,9 +24,11 @@ export class UserEntity extends BaseEntity {
   @Column()
   profileImage: string;
 
-  @Column({ nullable: true })
-  @Exclude({ toPlainOnly: true })
-  password: string;
+  @Column()
+  refreshToken: string;
+
+  @Column()
+  kakaoAccessToken: string;
 
   @OneToOne(() => PortfolioEntity)
   @JoinColumn() // 1:1 관계에선 필수

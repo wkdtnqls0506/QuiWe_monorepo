@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Request } from 'express';
 import axios from 'axios';
+import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
 
 @Injectable()
 export class UserService {
@@ -13,31 +14,15 @@ export class UserService {
   ) {}
 
   async findMe(req: Request) {
-    const accessToken = req.cookies['accessToken'];
-
-    const userResponse = await axios.get('https://kapi.kakao.com/v2/user/me', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
-    const kakaoUser = userResponse.data;
-
-    if (!kakaoUser.kakao_account.email) {
-      throw new Error('카카오 계정에서 이메일을 제공하지 않습니다.');
+    const user = req.user as JwtPayload;
+    if (!user?.email) {
+      throw new Error('사용자 정보를 찾을 수 없습니다.');
     }
 
-    let user = await this.userRepository.findOne({
-      where: { email: kakaoUser.kakao_account.email },
+    const findUser = await this.userRepository.findOne({
+      where: { email: user.email },
     });
 
-    if (!user) {
-      user = this.userRepository.create({
-        email: kakaoUser.kakao_account.email,
-        name: kakaoUser.properties.nickname,
-        profileImage: kakaoUser.properties.profile_image,
-      });
-      user = await this.userRepository.save(user);
-    }
-
-    return user;
+    return findUser;
   }
 }
