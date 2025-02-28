@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 export interface JwtPayload {
   sub: number;
@@ -15,12 +15,15 @@ export interface JwtPayload {
 export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
   constructor(private readonly configService: ConfigService) {
     super({
-      jwtFromRequest: (req) => {
-        if (!req.cookies || !req.cookies['accessToken']) {
-          throw new UnauthorizedException('액세스 토큰이 존재하지 않습니다.');
-        }
-        return req.cookies['accessToken'];
-      },
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => {
+          let accessToken = null;
+          if (req && req.cookies) {
+            accessToken = req.cookies['accessToken'];
+          }
+          return accessToken;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET'),
     });
@@ -35,12 +38,15 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'access') {
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(private readonly configService: ConfigService) {
     super({
-      jwtFromRequest: (req) => {
-        if (!req.cookies || !req.cookies['refreshToken']) {
-          throw new UnauthorizedException('리프레시 토큰이 존재하지 않습니다.');
-        }
-        return req.cookies['refreshToken'];
-      },
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => {
+          let refreshToken = null;
+          if (req && req.cookies) {
+            refreshToken = req.cookies['refreshToken'];
+          }
+          return refreshToken;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_REFRESH_TOKEN'),
     });
