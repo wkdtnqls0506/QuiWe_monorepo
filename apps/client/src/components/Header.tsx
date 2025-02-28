@@ -8,8 +8,9 @@ import classNames from 'classnames';
 import { useUserStore } from '@/providers/user-provider';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState, useRef } from 'react';
-import { getUser, kakaoLogout } from '@/apis/user';
+import { getUser } from '@/apis/user';
 import { TbLogout2, TbBookmark } from 'react-icons/tb';
+import { kakaoLogout } from '@/apis/auth';
 
 const Header = () => {
   const router = useRouter();
@@ -20,9 +21,11 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['user', user?.id],
     queryFn: getUser,
-    enabled: !user
+    enabled: !user,
+    retry: false,
+    staleTime: 1000 * 60 * 5
   });
 
   useEffect(() => {
