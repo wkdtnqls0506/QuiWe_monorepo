@@ -1,9 +1,15 @@
-export async function getChallengeQuestions(challengeId: number) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quiz/${challengeId}`);
+import { fetchWithAuth } from '@/interceptors/authFetchInterceptor.ts';
+import { TQuiz } from '@/types/quiz.type';
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
+export async function getChallengeQuestions(challengeId: number): Promise<TQuiz | null> {
+  const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/quiz/${challengeId}`, {
+    cache: 'no-cache'
+  });
+
+  if (!response) {
+    console.error('퀴즈 정보를 불러오지 못했습니다.');
+    return null;
   }
 
-  return res.json();
+  return response as TQuiz;
 }
