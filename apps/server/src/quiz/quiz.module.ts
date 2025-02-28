@@ -4,9 +4,10 @@ import { QuizEntity } from './entities/quiz.entity';
 import { QuizController } from './quiz.controller';
 import { QuizService } from './quiz.service';
 import { QuestionModule } from 'src/question/question.module';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([QuizEntity]), QuestionModule],
+  imports: [TypeOrmModule.forFeature([QuizEntity, UserEntity]), QuestionModule],
   controllers: [QuizController],
   providers: [QuizService],
 })
