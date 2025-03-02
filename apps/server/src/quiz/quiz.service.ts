@@ -43,16 +43,10 @@ export class QuizService {
     }));
     await this.questionService.saveQuestions(questions);
 
-    const finalQuiz = await this.quizRepository.findOne({
+    return await this.quizRepository.findOne({
       where: { id: savedQuiz.id },
       relations: ['questions', 'user'],
     });
-
-    return {
-      status: 'SUCCESS',
-      message: '퀴즈와 문제를 성공적으로 생성했습니다.',
-      data: finalQuiz,
-    };
   }
 
   findOne(id: number) {
