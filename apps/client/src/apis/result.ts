@@ -20,7 +20,10 @@ export async function createResult({ quizId, resultRequest }: { quizId: number; 
 
 export async function getResult(quizId: number): Promise<TResultResponse[] | null> {
   const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/result/${quizId}`, {
-    cache: 'no-cache'
+    cache: 'no-cache',
+    headers: {
+      'Cache-Control': 'no-cache, must-revalidate'
+    }
   });
 
   if (!response) {
