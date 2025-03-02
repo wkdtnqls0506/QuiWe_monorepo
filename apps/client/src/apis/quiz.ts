@@ -1,7 +1,8 @@
-import { TQuizRequest } from '@/types/quiz.type';
+import { fetchWithAuth } from '@/interceptors/authFetchInterceptor.ts';
+import { TQuiz, TQuizRequest } from '@/types/quiz.type';
 
 export async function createQuiz(quizRequest: TQuizRequest) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quiz`, {
+  const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/quiz`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -9,9 +10,10 @@ export async function createQuiz(quizRequest: TQuizRequest) {
     body: JSON.stringify(quizRequest)
   });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
+  if (!response) {
+    console.error('퀴즈 정보를 생성하지 못했습니다.');
+    return null;
   }
 
-  return res.json();
+  return response as TQuiz;
 }

@@ -10,14 +10,14 @@ const Description = ({ quizId }: { quizId: number }) => {
   const { data } = useQuery({
     queryKey: ['result', quizId],
     queryFn: () => getResult(quizId),
-    staleTime: 5000,
-    refetchOnMount: true
+    staleTime: Infinity
   });
 
   const { isExplanationVisible, setIsExplanationVisible } = useExplanationVisibleStore((state) => state);
 
   const resultId = useResultStore((state) => state.resultId);
-  const resultData = data?.results?.find((result: TResultResponse) => result.id === resultId);
+
+  const resultData = data?.find((result: TResultResponse) => result.id === resultId);
 
   if (!resultData) {
     return <div className='text-gray-500'>결과를 불러오는 중입니다...</div>;
@@ -65,7 +65,7 @@ const Description = ({ quizId }: { quizId: number }) => {
           <p className='text-gray-600 text-sm font-medium'>📝 사용자의 답변</p>
           <p
             className={`text-lg font-semibold px-4 py-3 rounded-md ${
-              userAnswer === correctAnswer
+              isCorrect
                 ? 'bg-green-100 text-green-700 border border-green-400'
                 : 'bg-red-100 text-red-700 border border-red-400'
             }`}

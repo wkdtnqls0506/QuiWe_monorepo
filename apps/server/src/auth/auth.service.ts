@@ -42,14 +42,16 @@ export class AuthService {
   async refresh(req: Request, res: Response) {
     const refreshToken = req.cookies['refreshToken'];
     if (!refreshToken) {
-      throw new UnauthorizedException('리프레시 토큰이 존재하지 않습니다.');
+      return res
+        .status(403)
+        .json({ message: '리프레시 토큰이 존재하지 않습니다.' });
     }
 
     const user = await this.userRepository.findOne({
       where: { id: (req.user as JwtPayload).sub },
     });
     if (!user || !user.refreshToken) {
-      throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
+      return res.status(403).json({ message: '유효하지 않은 사용자입니다.' });
     }
 
     const isRefreshTokenValid = await bcrypt.compare(
@@ -57,7 +59,9 @@ export class AuthService {
       user.refreshToken,
     );
     if (!isRefreshTokenValid) {
-      throw new UnauthorizedException('리프레시 토큰이 유효하지 않습니다.');
+      return res
+        .status(403)
+        .json({ message: '리프레시 토큰이 유효하지 않습니다.' });
     }
 
     const newAccessToken = this.jwtService.sign(

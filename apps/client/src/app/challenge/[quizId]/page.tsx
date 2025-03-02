@@ -2,7 +2,7 @@ import { getChallengeQuestions } from '@/apis/challenge';
 import Content from '@/components/Challenge/Content';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 
-const ChallegePage = async ({ params }: { params: { quizId: number } }) => {
+const ChallengePage = async ({ params }: { params: { quizId: number } }) => {
   const { quizId } = params;
 
   const queryClient = new QueryClient();
@@ -19,4 +19,4 @@ const ChallegePage = async ({ params }: { params: { quizId: number } }) => {
   );
 };
 
-export default ChallegePage;
+export default ChallengePage;

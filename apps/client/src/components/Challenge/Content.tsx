@@ -1,7 +1,6 @@
 'use client';
 
 import { getChallengeQuestions } from '@/apis/challenge';
-import { TQuiz } from '@/types/quiz.type';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import Timer from './Timer';
@@ -17,7 +16,7 @@ const Content = ({ quizId }: { quizId: number }) => {
 
   const { answers } = useAnswerStore((state) => state);
 
-  const { data } = useQuery<TQuiz>({
+  const { data } = useQuery({
     queryKey: ['challenge', quizId],
     queryFn: () => getChallengeQuestions(quizId),
     staleTime: Infinity

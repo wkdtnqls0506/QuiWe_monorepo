@@ -6,6 +6,7 @@ import { CreateResultDto } from './dto/create-result.dto';
 import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 import { ResultEntity } from './entities/result.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 // TODO: 반환값에 대한 타입 선언해주기
 
@@ -19,16 +20,27 @@ export class ResultService {
     private readonly resultRepository: Repository<ResultEntity>,
     @InjectRepository(QuestionEntity)
     private readonly questionRepository: Repository<QuestionEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {
     this.openai = new OpenAI({
       apiKey: this.configService.get<string>('OPENAI_API_KEY'),
     });
   }
 
-  async create(quizId: number, createResultDto: CreateResultDto) {
+  async create(
+    quizId: number,
+    createResultDto: CreateResultDto,
+    userId: number,
+  ) {
     const questions = await this.questionRepository.find({
       where: { quiz: { id: quizId } },
     });
+
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new Error('사용자를 찾을 수 없습니다.');
+    }
 
     const resultsToSave = [];
 
@@ -68,6 +80,7 @@ export class ResultService {
         isCorrect: results.isCorrect,
         correctAnswer: results.correctAnswer,
         description: results.description,
+        user,
       });
     }
 
@@ -75,12 +88,10 @@ export class ResultService {
   }
 
   async findOne(quizId: number) {
-    const results = await this.resultRepository.find({
+    return await this.resultRepository.find({
       where: { question: { quiz: { id: quizId } } },
-      relations: ['question'],
+      relations: ['question', 'user'],
     });
-
-    return { results };
   }
 
   async getCorrectAnswerMultipleChoice(

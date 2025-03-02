@@ -1,7 +1,8 @@
-import { TResultRequest } from '@/types/result.type';
+import { fetchWithAuth } from '@/interceptors/authFetchInterceptor.ts';
+import { TResultRequest, TResultResponse } from '@/types/result.type';
 
 export async function createResult({ quizId, resultRequest }: { quizId: number; resultRequest: TResultRequest }) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/result/${quizId}`, {
+  const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/result/${quizId}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -9,19 +10,26 @@ export async function createResult({ quizId, resultRequest }: { quizId: number; 
     body: JSON.stringify(resultRequest)
   });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
+  if (!response) {
+    console.error('퀴즈 정보를 불러오지 못했습니다.');
+    return null;
   }
 
-  return res.json();
+  return response;
 }
 
-export async function getResult(quizId: number) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/result/${quizId}`);
+export async function getResult(quizId: number): Promise<TResultResponse[] | null> {
+  const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/result/${quizId}`, {
+    cache: 'no-cache',
+    headers: {
+      'Cache-Control': 'no-cache, must-revalidate'
+    }
+  });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
+  if (!response) {
+    console.error('퀴즈 정보를 불러오지 못했습니다.');
+    return null;
   }
 
-  return res.json();
+  return response as TResultResponse[];
 }

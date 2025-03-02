@@ -1,3 +1,4 @@
+import { AuthGuard } from '@nestjs/passport';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { QuizService } from './quiz.service';
 import {
@@ -7,15 +8,21 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
 
 @Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 
   @Post()
-  async create(@Body() createQuizDto: CreateQuizDto) {
-    return await this.quizService.create(createQuizDto);
+  @UseGuards(AuthGuard('access'))
+  async create(@Body() createQuizDto: CreateQuizDto, @Req() req: Request) {
+    const userId = (req.user as JwtPayload).sub;
+    return await this.quizService.create(createQuizDto, userId);
   }
 
   @Get(':id')
