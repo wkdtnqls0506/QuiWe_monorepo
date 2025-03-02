@@ -25,7 +25,7 @@ const SubmitButton = () => {
         level: Number(levelParams)
       });
 
-      router.push(`/challenge/${quizData.data.id}`);
+      router.push(`/challenge/${quizData?.id}`);
     } catch (error) {
       toast.error('퀴즈 생성에 실패했습니다. 다시 시도해주세요.');
     }

@@ -1,5 +1,5 @@
 import { fetchWithAuth } from '@/interceptors/authFetchInterceptor.ts';
-import { TQuizRequest } from '@/types/quiz.type';
+import { TQuiz, TQuizRequest } from '@/types/quiz.type';
 
 export async function createQuiz(quizRequest: TQuizRequest) {
   const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/quiz`, {
@@ -15,5 +15,5 @@ export async function createQuiz(quizRequest: TQuizRequest) {
     return null;
   }
 
-  return response;
+  return response as TQuiz;
 }
