@@ -19,4 +19,10 @@ export class UserController {
   findMe(@Req() req: Request) {
     return this.userService.findMe(req);
   }
+
+  @Get('my-quizzes')
+  @UseGuards(AuthGuard('access'))
+  getUserQuizzes(@Req() req: Request) {
+    return this.userService.getUserQuizzes(req);
+  }
 }
