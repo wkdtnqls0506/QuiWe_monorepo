@@ -15,7 +15,8 @@ const QuizHistorySetting = () => {
     queryKey: ['history', user?.id],
     queryFn: getMyPageHistories,
     staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000
+    gcTime: 30 * 60 * 1000,
+    enabled: !!user?.id
   });
 
   return (
