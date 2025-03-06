@@ -1,16 +1,9 @@
-import dynamic from 'next/dynamic';
-import { Suspense } from 'react';
+import Content from '@/components/MyPage/Content';
 
-const Content = dynamic(() => import('@/components/MyPage/Content'), {
-  ssr: false
-});
+export const dynamic = 'force-dynamic';
 
 const MyPage = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Content />
-    </Suspense>
-  );
+  return <Content />;
 };
 
 export default MyPage;
