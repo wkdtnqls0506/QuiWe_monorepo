@@ -1,9 +1,12 @@
-import Content from '@/components/MyPage/Content';
-
-export const dynamic = 'force-dynamic';
+import MyPageContent from '@/components/MyPage/MyPageContent';
+import { Suspense } from 'react';
 
 const MyPage = () => {
-  return <Content />;
+  return (
+    <Suspense>
+      <MyPageContent />
+    </Suspense>
+  );
 };
 
 export default MyPage;
