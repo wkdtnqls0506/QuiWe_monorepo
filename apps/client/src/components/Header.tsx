@@ -116,7 +116,7 @@ const Header = () => {
                   <p className='font-semibold text-gray-900'>{user.name}님 안녕하세요</p>
                   <button
                     className='mt-2 px-4 py-1 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-100'
-                    onClick={() => router.push('/settings')}
+                    onClick={() => router.push('/mypage?tab=settings')}
                   >
                     내 정보 수정
                   </button>
@@ -124,7 +124,7 @@ const Header = () => {
                 <hr className='my-3 border-gray-300' />
                 <button
                   className='flex items-center gap-3 w-full px-4 py-2 font-medium text-[#4E5968] hover:bg-gray-100 hover:rounded-lg'
-                  onClick={() => router.push('/mypage')}
+                  onClick={() => router.push('/mypage?tab=my-quizzes')}
                 >
                   <TbBookmark />
                   내가 푼 퀴즈

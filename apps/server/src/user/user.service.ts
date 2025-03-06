@@ -31,8 +31,8 @@ export class UserService {
 
     const histories = await this.userRepository.findOne({
       where: { id: user.sub },
-      relations: ['quizzes'],
-      order: { createdAt: 'DESC' },
+      relations: ['quizzes', 'quizzes.results'],
+      order: { quizzes: { id: 'DESC' } },
     });
 
     return {
@@ -43,6 +43,11 @@ export class UserService {
         details: quiz.details,
         createdAt: quiz.createdAt.toISOString().split('T')[0],
         level: quiz.level,
+        results: {
+          correctResults: quiz.results.filter((result) => result.isCorrect)
+            .length,
+          totalResults: quiz.results.length,
+        },
       })),
     };
   }

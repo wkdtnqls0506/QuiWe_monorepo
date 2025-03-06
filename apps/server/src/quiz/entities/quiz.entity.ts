@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { QuestionEntity } from 'src/question/entities/question.entity';
+import { ResultEntity } from 'src/result/entities/result.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -30,4 +31,7 @@ export class QuizEntity extends BaseEntity {
     cascade: true,
   })
   questions: QuestionEntity[];
+
+  @OneToMany(() => ResultEntity, (result) => result.quiz)
+  results: ResultEntity[];
 }

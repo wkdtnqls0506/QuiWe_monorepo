@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { QuestionEntity } from 'src/question/entities/question.entity';
+import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
@@ -36,4 +37,10 @@ export class ResultEntity extends BaseEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.results)
   user: UserEntity;
+
+  @ManyToOne(() => QuizEntity, (quiz) => quiz.results, {
+    cascade: true,
+    nullable: false,
+  })
+  quiz: QuizEntity;
 }
