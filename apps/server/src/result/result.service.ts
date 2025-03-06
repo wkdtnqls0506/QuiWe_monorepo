@@ -33,6 +33,10 @@ export class ResultService {
     createResultDto: CreateResultDto,
     userId: number,
   ) {
+    const quiz = await this.questionRepository.findOne({
+      where: { id: quizId },
+    });
+
     const questions = await this.questionRepository.find({
       where: { quiz: { id: quizId } },
     });
@@ -81,6 +85,7 @@ export class ResultService {
         correctAnswer: results.correctAnswer,
         description: results.description,
         user,
+        quiz,
       });
     }
 
