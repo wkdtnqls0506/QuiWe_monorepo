@@ -1,8 +1,11 @@
 'use client';
 
-import ProfileSetting from '@/components/MyPage/ProfileSetting';
-import QuizHistorySetting from '@/components/MyPage/QuizHistorySetting';
+import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
+
+// TODO: loading 컴포넌트
+const ProfileSetting = dynamic(() => import('@/components/MyPage/ProfileSetting'), { ssr: false });
+const QuizHistorySetting = dynamic(() => import('@/components/MyPage/QuizHistorySetting'), { ssr: false });
 
 const MyPage = () => {
   const searchParams = useSearchParams();
