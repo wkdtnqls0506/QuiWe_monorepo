@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
@@ -9,6 +14,8 @@ import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Request } from 'express';
 import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
+import { QuizService } from 'src/quiz/quiz.service';
+import * as pdf from 'pdf-parse';
 
 @Injectable()
 export class PortfolioService {
@@ -21,6 +28,7 @@ export class PortfolioService {
     private portfolioRepository: Repository<PortfolioEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private quizService: QuizService,
   ) {
     this.s3 = new S3Client({
       region: this.configService.get<string>('AWS_REGION'),
@@ -37,15 +45,21 @@ export class PortfolioService {
       where: { id: (req.user as JwtPayload).sub },
     });
 
-    const fileKey = `pdf/${uuid()}${extname(file.originalname)}`;
+    const extractedText = await this.extractTextFromPdf(file);
+    if (!extractedText || extractedText.trim().length < 50) {
+      throw new HttpException(
+        'PDF에서 유효한 텍스트를 추출할 수 없습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
+    const fileKey = `pdf/${uuid()}${extname(file.originalname)}`;
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: fileKey,
       Body: file.buffer,
       ContentType: file.mimetype,
     });
-
     await this.s3.send(command);
     const fileURL = `https://${this.bucketName}.s3.amazonaws.com/${fileKey}`;
 
@@ -64,7 +78,29 @@ export class PortfolioService {
 
     await this.portfolioRepository.save(portfolio);
 
-    return fileURL;
+    await this.quizService.create(
+      {
+        category: '포트폴리오 기반 퀴즈',
+        details: [`${file.originalname}`],
+        level: 2,
+      },
+      user.id,
+      extractedText,
+    );
+
+    return { fileURL };
+  }
+
+  private async extractTextFromPdf(file: Express.Multer.File): Promise<string> {
+    try {
+      const data = await pdf(file.buffer);
+      return data.text || '';
+    } catch (error) {
+      console.error('❌ PDF 텍스트 추출 중 오류 발생:', error);
+      throw new InternalServerErrorException(
+        'PDF에서 텍스트를 추출하는 중 오류가 발생했습니다.',
+      );
+    }
   }
 
   async findOne(userId: number) {
