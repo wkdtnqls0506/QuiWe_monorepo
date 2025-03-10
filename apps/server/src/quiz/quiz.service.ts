@@ -16,7 +16,11 @@ export class QuizService {
     private readonly questionService: QuestionService,
   ) {}
 
-  async create(createQuizDto: CreateQuizDto, userId: number) {
+  async create(
+    createQuizDto: CreateQuizDto,
+    userId: number,
+    extractedText?: string,
+  ) {
     const { category, details, level } = createQuizDto;
 
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -33,7 +37,7 @@ export class QuizService {
 
     const generatedQuestions = await this.questionService.create({
       category,
-      details,
+      details: extractedText ? [extractedText] : details,
       level,
     });
 

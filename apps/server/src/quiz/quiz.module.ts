@@ -14,5 +14,6 @@ import { ResultEntity } from 'src/result/entities/result.entity';
   ],
   controllers: [QuizController],
   providers: [QuizService],
+  exports: [QuizService],
 })
 export class QuizModule {}
