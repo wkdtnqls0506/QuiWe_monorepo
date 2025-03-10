@@ -31,15 +31,18 @@ export class QuestionService {
         );
       }
 
-      const prompt = this.createPrompt(category, details, level);
+      const isPortfolioQuiz = details[0].startsWith('http');
+
+      const prompt = this.createPrompt(
+        category,
+        details,
+        level,
+        isPortfolioQuiz,
+      );
+
       const response = await this.openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
+        messages: [{ role: 'user', content: prompt }],
         max_tokens: 1500,
         temperature: 0.7,
       });
@@ -62,7 +65,6 @@ export class QuestionService {
     }
   }
 
-  // Questions 저장
   async saveQuestions(questions: Partial<QuestionEntity>[]) {
     const savedQuestions = await this.questionRepository.save(questions);
     return savedQuestions;
@@ -72,24 +74,65 @@ export class QuestionService {
     category: string,
     details: string[],
     level: number,
+    isPortfolioQuiz: boolean,
   ): string {
     const numQuestions = this.getRandomNumber(15, 20);
+
+    if (isPortfolioQuiz) {
+      return `You are an AI specialized in generating **technical interview questions** for software engineers.
+      A user has uploaded their **portfolio**, and below is the extracted text from their document.  
+      Analyze the **user's experience, technologies, projects, and methodologies** and generate **${numQuestions} advanced technical interview questions** in Korean.
+      
+      📌 **Extracted Portfolio Content (User’s Work Experience & Projects):**  
+      ${details[0]}  
+      
+      📌 **Instructions:**  
+      - **Extract key technologies, programming languages, frameworks, databases, and methodologies** from the portfolio.  
+      - **DO NOT ASK personal questions** (e.g., name, email, phone number, GitHub, blog, school, personal details).  
+      - **Focus strictly on technical skills and real-world problem-solving**.  
+      - Generate **${numQuestions} structured technical interview questions** based on the user's experience.  
+      - **Ensure a mix of multiple-choice, short-answer, and essay questions.**  
+      - Questions should **simulate real-world coding interviews** and challenge the user's problem-solving abilities.  
+      - **All responses must be in Korean**, even though the request is in English.  
+      - The JSON output must be **valid and properly formatted**.  
+      - **STRICTLY RETURN JSON ONLY.** Do NOT include any other text.
+      
+      📌 **Output Format (JSON Example):**  
+      {
+        "quizzes": [
+          {
+            "type": "multiple_choice",
+            "title": "퀵 정렬(Quick Sort)의 최악의 경우 시간 복잡도는 무엇인가요?",
+            "options": ["O(n log n)", "O(n^2)", "O(log n)", "O(n)"]
+          },
+          {
+            "type": "short_answer",
+            "title": "데이터베이스 인덱싱이 쿼리 성능을 향상시키는 원리를 설명하세요."
+          },
+          {
+            "type": "essay",
+            "title": "가장 최근 프로젝트에서 마주한 기술적 문제와 해결 방법을 설명하세요."
+          }
+        ]
+      }
+      
+      📌 **DO NOT RETURN ANY OTHER TEXT. ONLY RETURN VALID JSON.**`;
+    }
 
     return `Create a quiz with the following requirements:
     - Category: ${category}
     - Details: ${details.join(', ')}
     - Difficulty Level: ${level}
     - Number of questions: ${numQuestions}
-    - Types of questions: Mix of multiple choice, short answer, and essay questions.
+    - Types of questions: Multiple choice, short answer, and essay questions.
 
-    The response should be in JSON format, and all answers should be in Korean, even though the request is in English.
+     The response should be in JSON format, and all answers should be in Korean, even though the request is in English.
     
-    Example response format:
-
+    **Response Format (JSON)**
     {
       "quizzes": [
         {
-          "type": "multiple_choice", 
+          "type": "multiple_choice",
           "title": "Example question?",
           "options": ["Option 1", "Option 2", "Option 3", "Option 4"]
         },
@@ -102,7 +145,9 @@ export class QuestionService {
           "title": "Example essay question?"
         }
       ]
-    }`;
+    }
+  
+    **STRICTLY RETURN JSON ONLY.**`;
   }
 
   private getRandomNumber(min: number, max: number): number {

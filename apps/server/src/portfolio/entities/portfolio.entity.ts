@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('portfolio')
 export class PortfolioEntity extends BaseEntity {
@@ -9,6 +10,6 @@ export class PortfolioEntity extends BaseEntity {
   @Column()
   filePath: string;
 
-  @Column()
-  description: string;
+  @OneToOne(() => UserEntity, (user) => user.portfolio)
+  user: UserEntity;
 }
