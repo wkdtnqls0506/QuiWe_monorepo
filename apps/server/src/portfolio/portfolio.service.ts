@@ -78,17 +78,17 @@ export class PortfolioService {
 
     await this.portfolioRepository.save(portfolio);
 
-    await this.quizService.create(
+    const quizData = await this.quizService.create(
       {
-        category: '포트폴리오 기반 퀴즈',
-        details: [`${file.originalname}`],
+        category: '포트폴리오',
+        details: [Buffer.from(file.originalname, 'latin1').toString('utf-8')],
         level: 2,
       },
       user.id,
       extractedText,
     );
 
-    return { fileURL };
+    return { fileURL, quizId: quizData.id };
   }
 
   private async extractTextFromPdf(file: Express.Multer.File): Promise<string> {
