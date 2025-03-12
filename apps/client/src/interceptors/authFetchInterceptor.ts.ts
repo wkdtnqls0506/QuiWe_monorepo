@@ -1,11 +1,13 @@
 import { kakaoLogout, refreshAccessToken } from '@/apis/auth';
 
 export async function fetchWithAuth<T>(url: string, options: RequestInit = {}) {
+  const isFormData = options.body instanceof FormData;
+
   let response = await fetch(url, {
     ...options,
     credentials: 'include',
     headers: {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       ...options.headers
     }
   });
@@ -17,7 +19,7 @@ export async function fetchWithAuth<T>(url: string, options: RequestInit = {}) {
         ...options,
         credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
           ...options.headers
         }
       });
