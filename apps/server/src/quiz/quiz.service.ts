@@ -35,11 +35,14 @@ export class QuizService {
       user,
     });
 
-    const generatedQuestions = await this.questionService.create({
-      category,
-      details: extractedText ? [extractedText] : details,
-      level,
-    });
+    const generatedQuestions = await this.questionService.create(
+      {
+        category,
+        details,
+        level,
+      },
+      extractedText,
+    );
 
     const questions = generatedQuestions.data.quizzes.map((questionData) => ({
       ...questionData,

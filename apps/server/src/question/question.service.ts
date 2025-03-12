@@ -20,7 +20,7 @@ export class QuestionService {
     });
   }
 
-  async create(createQuizDto: CreateQuizDto) {
+  async create(createQuizDto: CreateQuizDto, extractedText?: string) {
     const { category, details, level } = createQuizDto;
 
     try {
@@ -31,19 +31,12 @@ export class QuestionService {
         );
       }
 
-      const isPortfolioQuiz = details[0].startsWith('http');
-
-      const prompt = this.createPrompt(
-        category,
-        details,
-        level,
-        isPortfolioQuiz,
-      );
+      const prompt = this.createPrompt(category, details, level, extractedText);
 
       const response = await this.openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 1500,
+        max_tokens: 2000,
         temperature: 0.7,
       });
 
@@ -74,60 +67,63 @@ export class QuestionService {
     category: string,
     details: string[],
     level: number,
-    isPortfolioQuiz: boolean,
+    extractedText: string,
   ): string {
-    const numQuestions = this.getRandomNumber(15, 20);
-
-    if (isPortfolioQuiz) {
-      return `You are an AI specialized in generating **technical interview questions** for software engineers.
-      A user has uploaded their **portfolio**, and below is the extracted text from their document.  
-      Analyze the **user's experience, technologies, projects, and methodologies** and generate **${numQuestions} advanced technical interview questions** in Korean.
+    if (extractedText) {
+      return `You are a Technology Education Expert, focused on creating quizzes that deepen knowledge in various technology stacks. 
+      Your task is to generate ${this.getRandomNumber(5, 10)} **based on the extracted text**, ensuring that the questions focus on technology-related concepts rather than just recalling specific facts from the text.
+      All answers should be in Korean.
+      The extracted text contains details about technologies and methodologies:
+      """
+      ${extractedText}
+      """
+    
+    ### Key Instructions for Quiz Generation
+    1. Identify Core Technology Areas
+       - Extract key technologies, methodologies, and concepts from the text.  
+       - Use this information to generate quiz questions that **test understanding of these topics**.
+       - Avoid asking the name of a particular technology directly.
+    
+    2. Generate Questions That Test Technical Knowledge
+       - Avoid asking factual questions about personal experiences in the text.  
+       - Instead, generate questions that assess knowledge and application of the extracted technologies.  
+    
+    3. Cover a Variety of Question Types
+       - Short-Answer Questions: Require concise technical explanations.  
+       - Essay Questions: Encourage detailed reasoning and application of concepts.  
+    
+    4. Ensure the Questions Apply to Any Developer
+       - Questions should be **universally applicable to professionals working with the extracted technologies**, not just the specific person in the portfolio.  
+    
+    5. Strict JSON Response Format
+       - The response must strictly adhere to the following JSON format.
       
-      📌 **Extracted Portfolio Content (User’s Work Experience & Projects):**  
-      ${details[0]}  
-      
-      📌 **Instructions:**  
-      - **Extract key technologies, programming languages, frameworks, databases, and methodologies** from the portfolio.  
-      - **DO NOT ASK personal questions** (e.g., name, email, phone number, GitHub, blog, school, personal details).  
-      - **Focus strictly on technical skills and real-world problem-solving**.  
-      - Generate **${numQuestions} structured technical interview questions** based on the user's experience.  
-      - **Ensure a mix of multiple-choice, short-answer, and essay questions.**  
-      - Questions should **simulate real-world coding interviews** and challenge the user's problem-solving abilities.  
-      - **All responses must be in Korean**, even though the request is in English.  
-      - The JSON output must be **valid and properly formatted**.  
-      - **STRICTLY RETURN JSON ONLY.** Do NOT include any other text.
-      
-      📌 **Output Format (JSON Example):**  
-      {
-        "quizzes": [
-          {
-            "type": "multiple_choice",
-            "title": "퀵 정렬(Quick Sort)의 최악의 경우 시간 복잡도는 무엇인가요?",
-            "options": ["O(n log n)", "O(n^2)", "O(log n)", "O(n)"]
-          },
-          {
-            "type": "short_answer",
-            "title": "데이터베이스 인덱싱이 쿼리 성능을 향상시키는 원리를 설명하세요."
-          },
-          {
-            "type": "essay",
-            "title": "가장 최근 프로젝트에서 마주한 기술적 문제와 해결 방법을 설명하세요."
-          }
-        ]
-      }
-      
-      📌 **DO NOT RETURN ANY OTHER TEXT. ONLY RETURN VALID JSON.**`;
+    **Response Format (JSON)**
+    {
+      "quizzes": [
+        {
+          "type": "short_answer",
+          "title": "Example short answer question?"
+        },
+        {
+          "type": "essay",
+          "title": "Example essay question?"
+        }
+      ]
+    }
+    
+    **STRICTLY RETURN JSON ONLY.**`;
     }
 
     return `Create a quiz with the following requirements:
     - Category: ${category}
     - Details: ${details.join(', ')}
     - Difficulty Level: ${level}
-    - Number of questions: ${numQuestions}
+    - Number of questions: ${this.getRandomNumber(15, 20)}
     - Types of questions: Multiple choice, short answer, and essay questions.
-
+  
      The response should be in JSON format, and all answers should be in Korean, even though the request is in English.
-    
+  
     **Response Format (JSON)**
     {
       "quizzes": [
