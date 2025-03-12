@@ -7,6 +7,7 @@ import { AnswerStoreProvider } from '@/providers/userAnswer-store-provider';
 import { ResultStoreProvider } from '@/providers/result-store-provider';
 import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-provider';
 import { UserStoreProvider } from '@/providers/user-provider';
+import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <UserStoreProvider>
+            <Toaster />
             <Header />
             <AnswerStoreProvider>
               <ResultStoreProvider>

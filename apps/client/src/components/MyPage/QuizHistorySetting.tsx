@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation';
 
 const QuizHistorySetting = () => {
   const router = useRouter();
-
   const { user } = useUserStore((set) => set);
 
   const { data } = useQuery({
@@ -21,6 +20,7 @@ const QuizHistorySetting = () => {
 
   return (
     <section className='w-full grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] p-4 gap-8'>
+      {/**TODO: 타입 변경 */}
       {data?.quizzes.map((quiz: any) => {
         const progress = (quiz.results.correctResults / quiz.results.totalResults) * 100;
         const levelColor = classNames({
@@ -32,12 +32,12 @@ const QuizHistorySetting = () => {
         return (
           <div
             key={quiz.id}
-            className='w-full flex flex-col justify-between gap-4 h-[190px] p-4 bg-gray-200 shadow-sm rounded-lg'
+            className='w-full flex flex-col justify-between gap-4 min-h-[220px] p-4 bg-gray-200 shadow-sm rounded-lg'
           >
             <p className='text-sm text-[#031228B3]'>{quiz.createdAt}</p>
-            <div className='flex items-center justify-between w-full'>
-              <div className='flex items-center gap-2'>
-                <p className='text-2xl font-bold'>{quiz.category}</p>
+            <div className='flex items-center justify-between w-full min-w-0'>
+              <div className='flex flex-col gap-1'>
+                <p className='text-2xl font-bold max-w-full'>{quiz.category}</p>
                 <p className='text-sm text-[#031228B3]'>{quiz.details}</p>
               </div>
               <span

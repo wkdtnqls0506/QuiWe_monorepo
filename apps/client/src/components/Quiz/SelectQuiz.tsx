@@ -11,7 +11,7 @@ const SelectQuiz = () => {
 
   const handleClick = () => {
     if (!categoryParams) {
-      toast.error('반드시 1개를 선택해주세요');
+      toast.error('반드시 1개의 카테고리를 선택해주세요');
     } else {
       router.push(`/quiz/${categoryParams}`);
     }
