@@ -16,6 +16,7 @@ const SubmitButton = () => {
   const handleClick = async () => {
     if (!detailParams || !levelParams || !lastPath) {
       toast.error('세부 주제와 레벨을 반드시 선택해주세요!');
+      return;
     }
 
     try {

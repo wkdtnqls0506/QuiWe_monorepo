@@ -33,13 +33,13 @@ const TitleList = ({ quizId }: { quizId: number }) => {
         <span className='text-green-600 font-bold'>
           {correctCount && correctCount < 10 ? String(correctCount).padStart(2, '0') : correctCount}
         </span>{' '}
-        / {data?.length}
+        / {data && data?.length < 10 ? String(data?.length).padStart(2, '0') : data?.length}
       </p>
       <ul className='flex flex-col gap-2 p-4 bg-white shadow-lg rounded-xl border'>
         {data?.map((result: TResultResponse, index: number) => (
           <li
             key={result.id}
-            className={`border-b border-gray-300 pb-2 px-3 py-2 rounded-md transition cursor-pointer ${
+            className={`border-b border-gray-300 pb-2 px-3 py-2 rounded-md transition cursor-pointer overflow-hidden break-words ${
               index + 1 === isClickedQuestion
                 ? 'bg-green-100 text-green-600 font-semibold border-l-4 border-green-500'
                 : 'hover:bg-gray-100'
