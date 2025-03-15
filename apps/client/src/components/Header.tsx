@@ -79,8 +79,8 @@ const Header = () => {
           <button
             key={category.id}
             className={classNames(
-              'ml-2 text-green-700 font-medium p-2 transition-all duration-200 hover:bg-green-100 rounded whitespace-nowrap',
-              pathName.startsWith(`/${category.id}`) && 'bg-green-100'
+              'ml-2 text-[#121212] font-medium p-2 transition-all duration-200 hover:text-gray-600 rounded whitespace-nowrap',
+              pathName.startsWith(`/${category.id}`) && 'text-green-500'
             )}
             onClick={() => router.push(`/${category.id}`)}
           >
@@ -116,7 +116,7 @@ const Header = () => {
                   <p className='font-semibold text-gray-900'>{user.name}님 안녕하세요</p>
                   <button
                     className='mt-2 px-4 py-1 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-100'
-                    onClick={() => router.push('/mypage?tab=settings')}
+                    onClick={() => router.push('/mypage?tab=profile')}
                   >
                     내 정보 수정
                   </button>
