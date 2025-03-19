@@ -11,7 +11,7 @@ export async function createResult({ quizId, resultRequest }: { quizId: number; 
   });
 
   if (!response) {
-    console.error('퀴즈 정보를 불러오지 못했습니다.');
+    console.error('퀴즈 해설을 생성하지 못했습니다.');
     return null;
   }
 
@@ -27,7 +27,7 @@ export async function getResult(quizId: number): Promise<TResultResponse[] | nul
   });
 
   if (!response) {
-    console.error('퀴즈 정보를 불러오지 못했습니다.');
+    console.error('퀴즈 해설을 불러오지 못했습니다.');
     return null;
   }
 
