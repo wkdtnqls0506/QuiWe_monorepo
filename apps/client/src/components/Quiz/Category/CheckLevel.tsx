@@ -1,6 +1,6 @@
 'use client';
 
-import level from '@/constants/level';
+import { QUIZ_LEVEL } from '@/constants/level';
 import { useSearchParams } from 'next/navigation';
 
 const CheckLevel = () => {
@@ -15,7 +15,7 @@ const CheckLevel = () => {
 
   return (
     <div className='flex justify-end items-center gap-8 mt-6 h-4 p-4'>
-      {level.map((item) => (
+      {QUIZ_LEVEL.map((item) => (
         <label key={item.id} htmlFor={item.id} className='flex items-center gap-2'>
           <input
             type='radio'

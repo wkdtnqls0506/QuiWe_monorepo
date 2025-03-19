@@ -6,14 +6,12 @@ import { useEffect, useRef, useState } from 'react';
 import Timer from './Timer';
 import QuizNumber from './QuizNumber';
 import QuizProblem from './QuizProblem';
-import toast from 'react-hot-toast';
 import { useAnswerStore } from '@/providers/userAnswer-store-provider';
-import { createResult } from '@/apis/result';
-import { useRouter } from 'next/navigation';
+import { useCreateResult } from '@/hooks/useCreateResult';
+import CustomLoading from '../Layout/CustomLoading';
+import { CREATE_RESULT_MESSAGES } from '@/constants/loadingMessage';
 
 const Content = ({ quizId }: { quizId: number }) => {
-  const router = useRouter();
-
   const { answers } = useAnswerStore((state) => state);
 
   const { data } = useQuery({
@@ -21,6 +19,8 @@ const Content = ({ quizId }: { quizId: number }) => {
     queryFn: () => getChallengeQuestions(quizId),
     staleTime: Infinity
   });
+
+  const { mutate, isPending } = useCreateResult();
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedNumber, setSelectedNumber] = useState<number>(1);
@@ -45,15 +45,10 @@ const Content = ({ quizId }: { quizId: number }) => {
   }, []);
 
   const handleClick = async () => {
-    try {
-      await createResult({
-        quizId,
-        resultRequest: { answers }
-      });
-      router.push(`/result/${quizId}`);
-    } catch (error) {
-      toast.error('퀴즈 결과 생성에 실패했습니다. 다시 시도해주세요.');
-    }
+    mutate({
+      quizId,
+      resultRequest: { answers }
+    });
   };
 
   return (
@@ -72,7 +67,13 @@ const Content = ({ quizId }: { quizId: number }) => {
             onClick={handleClick}
             disabled={data?.questions.length !== answers.length}
           >
-            {data?.questions.length !== answers.length ? '모든 문제를 완료하세요' : '답안 제출하기'}
+            {isPending ? (
+              <CustomLoading messages={CREATE_RESULT_MESSAGES} />
+            ) : data?.questions.length !== answers.length ? (
+              '모든 문제를 완료하세요'
+            ) : (
+              '답안 제출하기'
+            )}
           </button>
         </div>
       </div>

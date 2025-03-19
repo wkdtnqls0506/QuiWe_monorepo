@@ -1,4 +1,4 @@
-import Header from '@/components/Header';
+import Header from '@/components/Layout/Header';
 import './globals.css';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
@@ -8,6 +8,7 @@ import { ResultStoreProvider } from '@/providers/result-store-provider';
 import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-provider';
 import { UserStoreProvider } from '@/providers/user-provider';
 import { Toaster } from 'react-hot-toast';
+import Footer from '@/components/Layout/Footer';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -39,6 +40,7 @@ export default function RootLayout({
             </AnswerStoreProvider>
           </UserStoreProvider>
         </QueryProvider>
+        <Footer />
       </body>
     </html>
   );

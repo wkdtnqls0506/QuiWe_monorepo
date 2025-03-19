@@ -5,10 +5,10 @@ import toast from 'react-hot-toast';
 import PdfPreview from './PdfPreview';
 import { createPortfolio } from '@/apis/portfolio';
 import { useRouter } from 'next/navigation';
+import { FaCloudUploadAlt } from 'react-icons/fa';
 
 const FileUpload = () => {
   const router = useRouter();
-
   const [isDrop, setIsDrop] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -74,11 +74,9 @@ const FileUpload = () => {
   };
 
   return (
-    <div className='w-full max-w-2xl bg-white p-8 rounded-lg shadow-md'>
-      <h1 className='text-2xl font-bold text-center mb-6'>📁 포트폴리오 업로드</h1>
-      <p className='text-gray-600 text-center mb-4'>기술 면접 준비를 위한 포트폴리오를 업로드하세요.</p>
+    <div className='w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg border border-gray-200'>
       <label
-        className={`flex justify-center items-center border-2 border-dashed p-10 rounded-lg transition ${
+        className={`flex flex-col justify-center items-center border-2 border-dashed p-12 rounded-lg cursor-pointer transition ${
           isDrop ? 'border-green-500 bg-green-50' : 'border-gray-300'
         }`}
         onDragEnter={handleDragEnter}
@@ -87,16 +85,17 @@ const FileUpload = () => {
         onDrop={handleDropOrClick}
       >
         <input type='file' className='hidden' accept='.pdf' onChange={handleDropOrClick} />
-        <p className='text-gray-500'>{file ? `📄 ${file.name}` : '파일을 드래그 및 클릭하여 업로드하세요!'}</p>
+        <FaCloudUploadAlt className='text-5xl text-gray-400 mb-3' />
+        <p className='text-gray-500 text-lg'>{file ? `📄 ${file.name}` : '파일을 여기에 드래그 또는 클릭하세요'}</p>
       </label>
       {pdfUrl && (
-        <div className='flex flex-col w-full items-center'>
+        <div className='flex flex-col w-full items-center mt-8'>
           <PdfPreview pdfUrl={pdfUrl} fileName={file?.name} onClose={handleClosePreview} />
           <button
-            className='flex justify-center w-3/4 rounded-md py-2 px-40 mt-12 mb-8 bg-green-300 transition-all duration-200 ease-in-out text-white text-lg hover:bg-green-200 whitespace-nowrap'
+            className='w-full py-3 mt-6 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-400 transition-all'
             onClick={handleFetch}
           >
-            퀴즈 풀러가기
+            🚀 퀴즈 풀러가기
           </button>
         </div>
       )}

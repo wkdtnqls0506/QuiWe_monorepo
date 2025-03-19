@@ -1,16 +1,16 @@
 const quizCategory = [
-  { id: 'java', name: 'Java' },
-  { id: 'javascript', name: 'JavaScript' },
-  { id: 'typescript', name: 'TypeScript' },
-  { id: 'python', name: 'Python' },
-  { id: 'htmlcss', name: 'HTML/CSS' },
-  { id: 'react', name: 'React' },
-  { id: 'nextJS', name: 'Next.js' },
-  { id: 'nodeJS', name: 'Node.js' },
-  { id: 'express', name: 'Express' },
-  { id: 'nestJS', name: 'Nest.js' },
-  { id: 'spring', name: 'Spring/Spring Boot' },
-  { id: 'django', name: 'Django' }
+  { id: 'JavaScript', name: 'JavaScript' },
+  { id: 'TypeScript', name: 'TypeScript' },
+  { id: 'Python', name: 'Python' },
+  { id: 'Java', name: 'Java' },
+  { id: 'React', name: 'React' },
+  { id: 'Next.js', name: 'Next.js' },
+  { id: 'Node.js', name: 'Node.js' },
+  { id: 'Spring', name: 'Spring/Spring Boot' },
+  { id: 'Django', name: 'Django' },
+  { id: 'Database', name: 'Database' },
+  { id: 'CS', name: 'CS' },
+  { id: 'DevOps', name: 'DevOps' }
 ];
 
 export default quizCategory;
