@@ -1,6 +1,6 @@
 'use client';
 
-import { sidebarItems } from '@/constants/sidebarItems';
+import { SIDEBAR_ITEM } from '@/constants/sidebarItems';
 import classNames from 'classnames';
 import { useSearchParams, useRouter } from 'next/navigation';
 
@@ -12,7 +12,7 @@ const SideBar = () => {
   return (
     <nav className='w-[300px] h-full px-5'>
       <ul className='flex flex-col gap-4 p-4'>
-        {sidebarItems.map((item) => (
+        {SIDEBAR_ITEM.map((item) => (
           <li
             key={item.id}
             className={classNames(
