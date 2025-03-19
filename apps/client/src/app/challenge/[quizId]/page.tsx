@@ -8,8 +8,8 @@ const ChallengePage = async ({ params }: { params: { quizId: number } }) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['challenge', params.quizId],
-    queryFn: () => getChallengeQuestions(params.quizId)
+    queryKey: ['challenge', quizId],
+    queryFn: () => getChallengeQuestions(quizId)
   });
 
   return (
