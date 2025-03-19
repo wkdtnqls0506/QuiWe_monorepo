@@ -1,3 +1,5 @@
+'use client';
+
 import { HOW_TO_USE_DESCRIPTIONS } from '@/constants/homeDescriptions';
 import { motion } from 'framer-motion';
 
