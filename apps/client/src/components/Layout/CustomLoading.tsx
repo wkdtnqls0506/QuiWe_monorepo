@@ -8,11 +8,9 @@ type CustomLoadingProps = {
   messages?: string[];
 };
 
-const CustomLoading = ({ messages }: CustomLoadingProps) => {
-  if (!messages) return;
-
+const CustomLoading = ({ messages = ['로딩 중입니다...'] }: CustomLoadingProps) => {
   const [index, setIndex] = useState(0);
-  const messageList = messages.length > 0 ? messages : '';
+  const messageList = messages.length > 0 ? messages : ['로딩 중입니다...'];
 
   useEffect(() => {
     if (index >= messageList.length - 1) return;
