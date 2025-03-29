@@ -14,7 +14,7 @@ const NoQuizHistory = () => {
       transition={{ duration: 0.5 }}
       className='flex flex-col items-center justify-center p-10 bg-white shadow-md rounded-lg text-center'
     >
-      <Image src='/images/quiweX.png' alt='No Quiz' className='w-40 h-40 mb-4' />
+      <Image src='/images/quiweX.png' alt='No Quiz' width={40} height={40} className='mb-4' />
       <p className='mt-4 text-xl font-semibold text-gray-700'>아직 퀴즈 기록이 없어요!</p>
       <p className='mt-2 text-gray-500'>새로운 퀴즈를 생성하고 학습을 시작해보세요.</p>
       <button
