@@ -5,24 +5,29 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import CustomLoading from '@/components/Layout/CustomLoading';
 import toast from 'react-hot-toast';
 import { CREATE_QUIZ_MESSAGES } from '@/constants/loadingMessage';
+import { useQuizRequestStore } from '@/providers/quizRequest-provider';
 
 const SubmitButton = () => {
   const lastPath = usePathname().split('/').pop();
   const searchParams = useSearchParams();
-  const detailParams = searchParams.getAll('detail');
+  const detailsParams = searchParams.getAll('detail');
   const levelParams = searchParams.get('level');
 
   const { mutate, isPending } = useCreateQuiz();
 
+  const { setQuizRequest } = useQuizRequestStore((state) => state);
+
   const handleClick = () => {
-    if (!detailParams || !levelParams || !lastPath) {
+    if (!detailsParams || !levelParams || !lastPath) {
       toast.error('세부 주제와 레벨을 반드시 선택해주세요!');
       return;
     }
 
+    setQuizRequest({ category: lastPath, details: detailsParams, level: Number(levelParams) });
+
     mutate({
       category: lastPath || '',
-      details: detailParams,
+      details: detailsParams,
       level: Number(levelParams)
     });
   };
