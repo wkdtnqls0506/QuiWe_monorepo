@@ -5,17 +5,24 @@ import { useExplanationVisibleStore } from '@/providers/explanationVisible-provi
 import { useResultStore } from '@/providers/result-store-provider';
 import { TResultResponse } from '@/types/result.type';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 const Description = ({ quizId }: { quizId: number }) => {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['result', quizId],
     queryFn: () => getResult(quizId),
     staleTime: Infinity
   });
 
-  const { isExplanationVisible, setIsExplanationVisible } = useExplanationVisibleStore((state) => state);
+  const { resultId, setResultId } = useResultStore((state) => state);
 
-  const resultId = useResultStore((state) => state.resultId);
+  useEffect(() => {
+    if (data) {
+      setResultId(data?.[0]?.id ?? resultId);
+    }
+  }, []);
+
+  const { isExplanationVisible, setIsExplanationVisible } = useExplanationVisibleStore((state) => state);
 
   const resultData = data?.find((result: TResultResponse) => result.id === resultId);
 
@@ -28,6 +35,10 @@ const Description = ({ quizId }: { quizId: number }) => {
   const userOptionSelect = question.options?.find((option: string) => {
     return userAnswer === option;
   });
+
+  if (isLoading) {
+    return <div className='text-gray-500'>결과를 불러오는 중입니다...</div>;
+  }
 
   return (
     <div className='h-3/4 sticky top-24 mt-10 w-3/4 flex flex-col gap-8 bg-white px-10 py-8 shadow-md rounded-lg'>

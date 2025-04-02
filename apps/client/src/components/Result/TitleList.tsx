@@ -18,7 +18,7 @@ const TitleList = ({ quizId }: { quizId: number }) => {
   const { setIsExplanationVisible } = useExplanationVisibleStore((state) => state);
 
   useEffect(() => {
-    if (data && resultId === 1) {
+    if (data) {
       setResultId(data?.[0]?.id ?? resultId);
     }
   }, []);
