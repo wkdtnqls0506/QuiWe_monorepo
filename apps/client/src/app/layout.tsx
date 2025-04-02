@@ -9,7 +9,6 @@ import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-
 import { UserStoreProvider } from '@/providers/user-provider';
 import { Toaster } from 'react-hot-toast';
 import Footer from '@/components/Layout/Footer';
-import { QuizRequestStoreProvider } from '@/providers/quizRequest-provider';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -32,15 +31,13 @@ export default function RootLayout({
       <body>
         <QueryProvider>
           <UserStoreProvider>
-            <QuizRequestStoreProvider>
-              <Toaster />
-              <Header />
-              <AnswerStoreProvider>
-                <ResultStoreProvider>
-                  <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
-                </ResultStoreProvider>
-              </AnswerStoreProvider>
-            </QuizRequestStoreProvider>
+            <Toaster />
+            <Header />
+            <AnswerStoreProvider>
+              <ResultStoreProvider>
+                <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
+              </ResultStoreProvider>
+            </AnswerStoreProvider>
           </UserStoreProvider>
         </QueryProvider>
         <Footer />
