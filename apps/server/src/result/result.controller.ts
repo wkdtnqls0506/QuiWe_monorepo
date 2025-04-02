@@ -1,3 +1,4 @@
+import { QuizSubmissionFacade } from './../quiz-submission/quiz-submission.facade';
 import {
   Controller,
   Post,
@@ -19,17 +20,20 @@ import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
 @Controller('result')
 @UseInterceptors(ClassSerializerInterceptor)
 export class ResultController {
-  constructor(private readonly resultService: ResultService) {}
+  constructor(
+    private readonly resultService: ResultService,
+    private readonly quizSubmissionFacade: QuizSubmissionFacade,
+  ) {}
 
-  @Post(':quizId')
+  @Post()
   @UseGuards(AuthGuard('access'))
-  create(
-    @Req() req: Request,
-    @Param('quizId', ParseIntPipe) quizId: number,
-    @Body() createResultDto: CreateResultDto,
-  ) {
+  async create(@Req() req: Request, @Body() createResultDto: CreateResultDto) {
     const userId = (req.user as JwtPayload).sub;
-    return this.resultService.create(quizId, createResultDto, userId);
+    return this.quizSubmissionFacade.submitQuiz(
+      userId,
+      undefined,
+      createResultDto,
+    );
   }
 
   @Get(':quizId')

@@ -6,10 +6,6 @@ export type TUserAnswer = {
   userAnswer: string;
 };
 
-export type TResultRequest = {
-  answers: TUserAnswer[];
-};
-
 export type TResultResponse = {
   id: number;
   createdAt: string;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateQuizDto } from './dto/create-quiz.dto';
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { QuizEntity } from './entities/quiz.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionService } from 'src/question/question.service';
@@ -19,6 +19,7 @@ export class QuizService {
   async create(
     createQuizDto: CreateQuizDto,
     userId: number,
+    queryRunner: QueryRunner,
     extractedText?: string,
   ) {
     const { category, details, level } = createQuizDto;
@@ -28,32 +29,26 @@ export class QuizService {
       throw new Error('사용자를 찾을 수 없습니다.');
     }
 
-    const savedQuiz = await this.quizRepository.save({
+    const quiz = queryRunner.manager.create(QuizEntity, {
       category,
       details: details.join(', '),
       level,
       user,
     });
+    const savedQuiz = await queryRunner.manager.save(quiz);
 
-    const generatedQuestions = await this.questionService.create(
+    await this.questionService.create(
       {
         category,
         details,
         level,
       },
+      queryRunner,
+      savedQuiz,
       extractedText,
     );
 
-    const questions = generatedQuestions.data.quizzes.map((questionData) => ({
-      ...questionData,
-      quiz: savedQuiz,
-    }));
-    await this.questionService.saveQuestions(questions);
-
-    return await this.quizRepository.findOne({
-      where: { id: savedQuiz.id },
-      relations: ['questions', 'user'],
-    });
+    return await queryRunner.manager.save(quiz);
   }
 
   findOne(id: number) {

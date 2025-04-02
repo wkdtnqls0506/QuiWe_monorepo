@@ -1,66 +1,45 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { QueryRunner } from 'typeorm';
 import { QuestionEntity } from './entities/question.entity';
 import { CreateQuizDto } from 'src/quiz/dto/create-quiz.dto';
+import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 
 @Injectable()
 export class QuestionService {
   private readonly openai: OpenAI;
 
-  constructor(
-    private readonly configService: ConfigService,
-    @InjectRepository(QuestionEntity)
-    private readonly questionRepository: Repository<QuestionEntity>,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     this.openai = new OpenAI({
       apiKey: this.configService.get<string>('OPENAI_API_KEY'),
     });
   }
 
-  async create(createQuizDto: CreateQuizDto, extractedText?: string) {
+  async create(
+    createQuizDto: CreateQuizDto,
+    queryRunner: QueryRunner,
+    quiz: QuizEntity,
+    extractedText?: string,
+  ) {
     const { category, details, level } = createQuizDto;
 
-    try {
-      if (!details || !level) {
-        throw new HttpException(
-          '필수 입력값이 누락되었습니다.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+    const prompt = this.createPrompt(category, details, level, extractedText);
+    const response = await this.openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 2000,
+      temperature: 0.7,
+    });
 
-      const prompt = this.createPrompt(category, details, level, extractedText);
+    const generated = JSON.parse(response.choices[0].message?.content || '{}');
 
-      const response = await this.openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 2000,
-        temperature: 0.7,
-      });
+    const questions = generated.quizzes.map((question) => ({
+      ...question,
+      quiz,
+    }));
 
-      const generatedQuestions = JSON.parse(
-        response.choices[0].message?.content || '{}',
-      );
-
-      return {
-        status: 'SUCCESS',
-        message: '퀴즈 문제를 성공적으로 생성했습니다.',
-        data: generatedQuestions,
-      };
-    } catch (error) {
-      console.error('퀴즈 생성 중 에러가 발생했습니다.:', error);
-      throw new HttpException(
-        '퀴즈 생성 중 에러가 발생했습니다.',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async saveQuestions(questions: Partial<QuestionEntity>[]) {
-    const savedQuestions = await this.questionRepository.save(questions);
-    return savedQuestions;
+    return await queryRunner.manager.save(QuestionEntity, questions);
   }
 
   private createPrompt(

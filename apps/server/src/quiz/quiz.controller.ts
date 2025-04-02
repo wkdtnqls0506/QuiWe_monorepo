@@ -13,16 +13,20 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
+import { QuizSubmissionFacade } from 'src/quiz-submission/quiz-submission.facade';
 
 @Controller('quiz')
 export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+  constructor(
+    private readonly quizService: QuizService,
+    private readonly quizSubmissionFacade: QuizSubmissionFacade,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard('access'))
   async create(@Body() createQuizDto: CreateQuizDto, @Req() req: Request) {
     const userId = (req.user as JwtPayload).sub;
-    return await this.quizService.create(createQuizDto, userId);
+    return await this.quizSubmissionFacade.submitQuiz(userId, createQuizDto);
   }
 
   @Get(':id')
