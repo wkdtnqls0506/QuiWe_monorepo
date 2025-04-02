@@ -8,6 +8,10 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreateResultDto {
+  @IsNumber()
+  @IsNotEmpty()
+  quizId: number;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => UserAnswerDto)
