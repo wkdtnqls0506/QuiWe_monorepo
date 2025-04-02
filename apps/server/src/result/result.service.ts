@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QuestionEntity } from 'src/question/entities/question.entity';
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { CreateResultDto } from './dto/create-result.dto';
 import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 import { ResultEntity } from './entities/result.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 
 // TODO: 반환값에 대한 타입 선언해주기
 
@@ -16,12 +17,12 @@ export class ResultService {
 
   constructor(
     private readonly configService: ConfigService,
-    @InjectRepository(ResultEntity)
-    private readonly resultRepository: Repository<ResultEntity>,
     @InjectRepository(QuestionEntity)
     private readonly questionRepository: Repository<QuestionEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(ResultEntity)
+    private readonly resultRepository: Repository<ResultEntity>,
   ) {
     this.openai = new OpenAI({
       apiKey: this.configService.get<string>('OPENAI_API_KEY'),
@@ -32,8 +33,9 @@ export class ResultService {
     quizId: number,
     createResultDto: CreateResultDto,
     userId: number,
+    queryRunner: QueryRunner,
   ) {
-    const quiz = await this.questionRepository.findOne({
+    const quiz = await queryRunner.manager.findOne(QuizEntity, {
       where: { id: quizId },
     });
 
@@ -49,47 +51,35 @@ export class ResultService {
     const resultsToSave = [];
 
     for (const question of questions) {
-      const existingResult = await this.resultRepository.findOne({
-        where: { question: { id: question.id } },
-      });
-
-      if (existingResult) {
-        continue;
-      }
-
-      const answers = createResultDto.answers.find(
+      const answerDto = createResultDto.answers.find(
         (answer) => answer.questionId === question.id,
-      ) || { userAnswer: '' };
+      );
+      const userAnswer = answerDto?.userAnswer ?? '';
 
-      let results;
-
-      if (question.type === 'multiple_choice') {
-        const options = question.options;
-
-        results = await this.getCorrectAnswerMultipleChoice(
-          question.title,
-          options,
-          answers.userAnswer,
-        );
-      } else {
-        results = await this.getCorrectAnswerSentence(
-          question.title,
-          answers.userAnswer,
-        );
-      }
+      const resultData =
+        question.type === 'multiple_choice'
+          ? await this.getCorrectAnswerMultipleChoice(
+              question.title,
+              question.options,
+              userAnswer,
+            )
+          : await this.getCorrectAnswerSentence(question.title, userAnswer);
 
       resultsToSave.push({
-        question: question,
-        userAnswer: answers.userAnswer,
-        isCorrect: results.isCorrect,
-        correctAnswer: results.correctAnswer,
-        description: results.description,
+        question,
+        userAnswer,
+        isCorrect: resultData.isCorrect,
+        correctAnswer: resultData.correctAnswer,
+        description: resultData.description,
         user,
         quiz,
       });
     }
 
-    return await this.resultRepository.save(resultsToSave);
+    return {
+      quizId: quiz.id,
+      results: await queryRunner.manager.save(ResultEntity, resultsToSave),
+    };
   }
 
   async findOne(quizId: number) {
