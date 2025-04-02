@@ -1,13 +1,13 @@
 import { fetchWithAuth } from '@/interceptors/authFetchInterceptor.ts';
-import { TResultRequest, TResultResponse } from '@/types/result.type';
+import { TResultResponse, TUserAnswer } from '@/types/result.type';
 
-export async function createResult({ quizId, resultRequest }: { quizId: number; resultRequest: TResultRequest }) {
-  const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/result/${quizId}`, {
+export async function createResult(quizId: number, answers: TUserAnswer[]) {
+  const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/result`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(resultRequest)
+    body: JSON.stringify({ quizId, answers })
   });
 
   if (!response) {

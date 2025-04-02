@@ -45,10 +45,7 @@ const Content = ({ quizId }: { quizId: number }) => {
   }, []);
 
   const handleClick = async () => {
-    mutate({
-      quizId,
-      resultRequest: { answers }
-    });
+    mutate({ quizId, answers });
   };
 
   return (
