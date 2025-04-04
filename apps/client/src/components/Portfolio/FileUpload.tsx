@@ -62,12 +62,12 @@ const FileUpload = () => {
   const handleFetch = async () => {
     try {
       const pdfUploadData = await createPortfolio(file);
-      if (!pdfUploadData || !pdfUploadData.quizId) {
+      if (!pdfUploadData || !pdfUploadData.id) {
         toast.error('업로드한 PDF에서 유효한 텍스트를 추출할 수 없습니다. 다른 파일을 시도해주세요.');
         return;
       }
 
-      router.push(`/challenge/${pdfUploadData.quizId}`);
+      router.push(`/challenge/${pdfUploadData.id}`);
     } catch (error) {
       console.error(error);
     }
