@@ -11,10 +11,12 @@ import { UserModule } from './user/user.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { ResultModule } from './result/result.module';
 import { OauthModule } from './oauth/oauth.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     ConfigModule(),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(ormconfig as TypeOrmModuleOptions),
     UserModule,
     QuizModule,
