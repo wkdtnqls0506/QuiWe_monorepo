@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
+import { QuizStatus } from 'src/quiz/enums/quiz-status.enum';
 import { QuestionEntity } from 'src/question/entities/question.entity';
 import { ResultEntity } from 'src/result/entities/result.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -23,6 +24,9 @@ export class QuizEntity extends BaseEntity {
 
   @Column()
   details: string;
+
+  @Column({ type: 'enum', enum: QuizStatus, default: QuizStatus.PENDING })
+  status: QuizStatus;
 
   @ManyToOne(() => UserEntity, (user) => user.quizzes)
   user: UserEntity;
