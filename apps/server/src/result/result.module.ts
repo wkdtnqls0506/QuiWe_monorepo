@@ -7,7 +7,6 @@ import { QuestionEntity } from 'src/question/entities/question.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { QuestionModule } from 'src/question/question.module';
-import { QuizSubmissionModule } from 'src/quiz-submission/quiz-submission.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { QuizSubmissionModule } from 'src/quiz-submission/quiz-submission.module
       UserEntity,
     ]),
     QuestionModule,
-    forwardRef(() => QuizSubmissionModule),
   ],
   controllers: [ResultController],
   providers: [ResultService],
