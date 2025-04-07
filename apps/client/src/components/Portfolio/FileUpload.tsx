@@ -3,15 +3,17 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import PdfPreview from './PdfPreview';
-import { createPortfolio } from '@/apis/portfolio';
-import { useRouter } from 'next/navigation';
 import { FaCloudUploadAlt } from 'react-icons/fa';
+import { useCreatePortfolio } from '@/hooks/useCreatePortfolio';
+import CustomLoading from '../Layout/CustomLoading';
+import { CREATE_QUIZ_MESSAGES } from '@/constants/loadingMessage';
 
 const FileUpload = () => {
-  const router = useRouter();
   const [isDrop, setIsDrop] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
+  const { mutate, isPending } = useCreatePortfolio();
 
   const handleDragEnter = (event: React.DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
@@ -59,20 +61,6 @@ const FileUpload = () => {
     setPdfUrl(null);
   };
 
-  const handleFetch = async () => {
-    try {
-      const pdfUploadData = await createPortfolio(file);
-      if (!pdfUploadData || !pdfUploadData.id) {
-        toast.error('업로드한 PDF에서 유효한 텍스트를 추출할 수 없습니다. 다른 파일을 시도해주세요.');
-        return;
-      }
-
-      router.push(`/challenge/${pdfUploadData.id}`);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <div className='w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg border border-gray-200'>
       <label
@@ -93,9 +81,11 @@ const FileUpload = () => {
           <PdfPreview pdfUrl={pdfUrl} fileName={file?.name} onClose={handleClosePreview} />
           <button
             className='w-full py-3 mt-6 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-400 transition-all'
-            onClick={handleFetch}
+            onClick={() => {
+              mutate(file);
+            }}
           >
-            🚀 퀴즈 풀러가기
+            {isPending ? <CustomLoading messages={CREATE_QUIZ_MESSAGES} /> : '제출하고 퀴즈 풀러가기'}
           </button>
         </div>
       )}
