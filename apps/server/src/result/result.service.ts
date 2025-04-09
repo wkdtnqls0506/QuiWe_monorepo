@@ -116,28 +116,29 @@ export class ResultService {
     correctAnswer: string;
   }> {
     const prompt = `
-    Question: ${title}
-    Options: ${options.join(', ')}
-
-    User's Answer: "${userAnswer}"
-
-    Evaluation Criteria:
-    1. Correctness Evaluation:
-      - Determine if the user's answer matches the correct option among the provided choices.
-      - Return 'true' if the user's answer is correct, or 'false' if it is incorrect.
-    2. Detailed Explanation:
-      - If the user's answer is correct, explain why it is the correct answer, focusing on the technical or logical reasons.
-      - If the user's answer is incorrect, clearly explain why it is wrong and provide guidance to help the user understand the correct choice.
-    3. Correct Answer:
-      - If the user's answer is incorrect, specify the correct answer clearly and explain why it is the most appropriate choice among the options.
-
-    Your output should strictly follow this JSON format:
-    {
-      "isCorrect": true or false,
-      "description": "Provide a detailed explanation in Korean. If the answer is correct, explain why it is correct. If incorrect, explain the mistake and provide constructive feedback.",
-      "correctAnswer": "Provide the correct answer in Korean and explain why it is the best choice."
-    }
-  `;
+      Evaluate the following multiple-choice question and provide the results in JSON format.
+  
+      Question: "${title}"
+      Options: ${options.join(', ')}
+  
+      User's Answer: "${userAnswer}"
+  
+      ### Key Instructions:
+      1. Evaluate whether the user's answer is correct based on the options provided.
+      2. Provide a detailed explanation in Korean, indicating why the answer is correct or incorrect.
+         - If correct, explain why the selected option is the correct one.
+         - If incorrect, explain the mistake and provide the correct answer.
+      3. Return the correct answer in Korean and explain why it is the best option.
+  
+      **Response Format (JSON)**
+      {
+        "isCorrect": true or false,
+        "description": "A detailed explanation in Korean based on the user's answer.",
+        "correctAnswer": "The correct answer in Korean with a detailed explanation."
+      }
+  
+      **STRICTLY RETURN JSON ONLY.**
+    `;
 
     const response = await this.openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
@@ -160,25 +161,27 @@ export class ResultService {
     correctAnswer: string;
   }> {
     const prompt = `
-    Evaluate the following answer to a question and provide the results in JSON format.
+      Evaluate the following question and provide the results in JSON format.
   
-    Question: "${title}"
+      Question: "${title}"
   
-    User's Answer: "${userAnswer}"
+      User's Answer: "${userAnswer}"
   
-    Evaluation Criteria:
-    1. Determine if the user's answer is correct ('True') or incorrect ('False') based on the question's requirements.
-    2. Provide a detailed explanation in Korean tailored to the user's answer:
-       - If the answer is correct, provide additional technical insights, examples, or related concepts to deepen the user's understanding.
-       - If the answer is incorrect, analyze the user's response to explain why it is incorrect. Offer constructive feedback on how to approach the question correctly and clarify the correct answer.
-    3. Include the correct or model answer in Korean for clarity.
+      ### Key Instructions:
+      1. Determine if the user's answer is correct ('True') or incorrect ('False') based on the question's requirements.
+      2. Provide a detailed explanation in Korean based on the user's answer.
+         - If the answer is correct, provide a detailed explanation of why it is correct.
+         - If the answer is incorrect, explain why it is wrong and provide constructive feedback on how to approach the question correctly.
+      3. Return the correct or model answer in Korean.
   
-    Your output should strictly follow this JSON format:
-    {
-      "isCorrect": true or false,
-      "description": "A detailed explanation in Korean based on the user's answer. Include technical insights or feedback depending on the correctness.",
-      "correctAnswer": "The correct answer in Korean or a detailed explanation of the concept related to the question."
-    }
+      **Response Format (JSON)**
+      {
+        "isCorrect": true or false,
+        "description": "A detailed explanation in Korean based on the user's answer.",
+        "correctAnswer": "The correct answer in Korean or a detailed explanation of the concept."
+      }
+  
+      **STRICTLY RETURN JSON ONLY.**
     `;
 
     const response = await this.openai.chat.completions.create({
