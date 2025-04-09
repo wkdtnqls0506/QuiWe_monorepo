@@ -9,6 +9,7 @@ import { ExplanationVisibleStoreProvider } from '@/providers/explanationVisible-
 import { UserStoreProvider } from '@/providers/user-provider';
 import { Toaster } from 'react-hot-toast';
 import Footer from '@/components/Layout/Footer';
+import LayoutWrapper from '@/components/Layout/LayoutWrapper';
 
 export const metadata: Metadata = {
   title: 'QuiWe',
@@ -21,11 +22,7 @@ const pretendard = localFont({
   display: 'swap'
 });
 
-export default function RootLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en' className={`${pretendard.variable} font-pretendard`}>
       <body>
@@ -35,7 +32,9 @@ export default function RootLayout({
             <Header />
             <AnswerStoreProvider>
               <ResultStoreProvider>
-                <ExplanationVisibleStoreProvider>{children}</ExplanationVisibleStoreProvider>
+                <ExplanationVisibleStoreProvider>
+                  <LayoutWrapper>{children}</LayoutWrapper>
+                </ExplanationVisibleStoreProvider>
               </ResultStoreProvider>
             </AnswerStoreProvider>
           </UserStoreProvider>
