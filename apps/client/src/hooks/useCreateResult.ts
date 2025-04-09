@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { createResult } from '@/apis/result';
-import { TUserAnswer } from '@/types/result.type';
+import { TResultRequest } from '@/types/result.type';
 
 export const useCreateResult = () => {
   const queryClient = useQueryClient();
@@ -10,8 +10,8 @@ export const useCreateResult = () => {
 
   return useMutation({
     mutationKey: ['result'],
-    mutationFn: ({ quizId, answers }: { quizId: number; answers: TUserAnswer[] }) => createResult(quizId, answers),
-    onSuccess: (resultData: any) => {
+    mutationFn: (resultRequest: TResultRequest) => createResult(resultRequest),
+    onSuccess: (resultData) => {
       if (!resultData?.quizId) {
         toast.error('결과 데이터가 존재하지 않습니다');
         return;

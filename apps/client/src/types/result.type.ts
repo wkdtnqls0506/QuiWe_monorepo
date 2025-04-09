@@ -6,6 +6,11 @@ export type TUserAnswer = {
   userAnswer: string;
 };
 
+export type TResultRequest = {
+  quizId: number;
+  answers: TUserAnswer[];
+};
+
 export type TResultResponse = {
   id: number;
   createdAt: string;
