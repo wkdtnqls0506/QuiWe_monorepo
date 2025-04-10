@@ -34,6 +34,10 @@ export class UserEntity extends BaseEntity {
   @Exclude()
   kakaoAccessToken: string;
 
+  @Column()
+  @Exclude()
+  kakaoRefreshToken: string;
+
   @OneToOne(() => PortfolioEntity)
   @JoinColumn() // 1:1 관계에선 필수
   portfolio: PortfolioEntity;
