@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('portfolio')
 export class PortfolioEntity extends BaseEntity {
@@ -10,6 +10,8 @@ export class PortfolioEntity extends BaseEntity {
   @Column()
   filePath: string;
 
-  @OneToOne(() => UserEntity, (user) => user.portfolio)
+  @ManyToOne(() => UserEntity, (user) => user.portfolios, {
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
 }

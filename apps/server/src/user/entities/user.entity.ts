@@ -3,14 +3,7 @@ import { BaseEntity } from 'src/common/entity/base.entity';
 import { PortfolioEntity } from 'src/portfolio/entities/portfolio.entity';
 import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import { ResultEntity } from 'src/result/entities/result.entity';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -38,9 +31,8 @@ export class UserEntity extends BaseEntity {
   @Exclude()
   kakaoRefreshToken: string;
 
-  @OneToOne(() => PortfolioEntity)
-  @JoinColumn() // 1:1 관계에선 필수
-  portfolio: PortfolioEntity;
+  @OneToMany(() => PortfolioEntity, (portfolio) => portfolio.user)
+  portfolios: PortfolioEntity[];
 
   @OneToMany(() => QuizEntity, (quiz) => quiz.user)
   quizzes: QuizEntity[];
