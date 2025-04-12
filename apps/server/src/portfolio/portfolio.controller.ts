@@ -28,7 +28,7 @@ export class PortfolioController {
   }
 
   @Get(':userId')
-  async getPortfolio(@Param('userId') userId: number) {
-    return this.portfolioService.findOne(userId);
+  async getPortfolios(@Param('userId') userId: number) {
+    return this.portfolioService.find(userId);
   }
 }

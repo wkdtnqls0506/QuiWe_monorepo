@@ -67,14 +67,10 @@ export class PortfolioService {
       where: { user: { id: user.id } },
     });
 
-    if (portfolio) {
-      portfolio.filePath = fileURL;
-    } else {
-      portfolio = this.portfolioRepository.create({
-        filePath: fileURL,
-        user: { id: user.id },
-      });
-    }
+    portfolio = this.portfolioRepository.create({
+      filePath: fileURL,
+      user: { id: user.id },
+    });
 
     await this.portfolioRepository.save(portfolio);
 
@@ -103,8 +99,8 @@ export class PortfolioService {
     }
   }
 
-  async findOne(userId: number) {
-    return await this.portfolioRepository.findOne({
+  async find(userId: number) {
+    return await this.portfolioRepository.find({
       where: { user: { id: userId } },
     });
   }
