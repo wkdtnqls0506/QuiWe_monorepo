@@ -4,7 +4,11 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
@@ -16,6 +20,7 @@ import { Request } from 'express';
 import { JwtPayload } from 'src/auth/strategy/jwt.strategy';
 import { QuizService } from 'src/quiz/quiz.service';
 import * as pdf from 'pdf-parse';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class PortfolioService {
@@ -68,6 +73,7 @@ export class PortfolioService {
     });
 
     portfolio = this.portfolioRepository.create({
+      fileName: Buffer.from(file.originalname, 'latin1').toString('utf-8'),
       filePath: fileURL,
       user: { id: user.id },
     });
@@ -99,9 +105,34 @@ export class PortfolioService {
     }
   }
 
-  async find(userId: number) {
-    return await this.portfolioRepository.find({
-      where: { user: { id: userId } },
+  async getSignedPdfUrl(fileKey: string): Promise<string> {
+    const command = new GetObjectCommand({
+      Bucket: this.bucketName,
+      Key: fileKey,
+      ResponseContentType: 'application/pdf',
+      ResponseContentDisposition: 'inline',
     });
+
+    return await getSignedUrl(this.s3, command, { expiresIn: 60 * 60 });
+  }
+
+  async find(userId: number) {
+    const portfolios = await this.portfolioRepository.find({
+      where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
+    });
+
+    const signedUrls = await Promise.all(
+      portfolios.map(async (portfolio) => {
+        const fileKey = portfolio.filePath.split('.com/')[1];
+        const signedUrl = await this.getSignedPdfUrl(fileKey);
+        return {
+          ...portfolio,
+          signedUrl,
+        };
+      }),
+    );
+
+    return signedUrls;
   }
 }
