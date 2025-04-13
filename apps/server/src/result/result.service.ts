@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QuestionEntity } from 'src/question/entities/question.entity';
 import { Repository } from 'typeorm';
-import { CreateResultDto } from './dto/create-result.dto';
-import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
+import OpenAI from 'openai';
+
 import { ResultEntity } from './entities/result.entity';
+import { CreateResultDto } from './dto/create-result.dto';
+import { QuestionEntity } from 'src/question/entities/question.entity';
+import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { QuizStatus } from 'src/quiz/enums/quiz-status.enum';
-import { QuizEntity } from 'src/quiz/entities/quiz.entity';
 
 // TODO: 반환값에 대한 타입 선언해주기
 
@@ -37,9 +38,7 @@ export class ResultService {
     createResultDto: CreateResultDto,
     userId: number,
   ) {
-    const quiz = await this.quizRepository.findOne({
-      where: { id: quizId },
-    });
+    const quiz = await this.quizRepository.findOne({ where: { id: quizId } });
 
     const questions = await this.questionRepository.find({
       where: { quiz: { id: quizId } },
@@ -57,45 +56,56 @@ export class ResultService {
         where: { question: { id: question.id } },
       });
 
-      if (existingResult) {
-        continue;
-      }
+      if (existingResult) continue;
 
-      const answers = createResultDto.answers.find(
-        (answer) => answer.questionId === question.id,
+      const answer = createResultDto.answers.find(
+        (a) => a.questionId === question.id,
       ) || { userAnswer: '' };
 
-      let results;
-
+      let prompt = '';
       if (question.type === 'multiple_choice') {
-        const options = question.options;
-
-        results = await this.getCorrectAnswerMultipleChoice(
+        prompt = this.getCorrectAnswerMultipleChoice(
           question.title,
-          options,
-          answers.userAnswer,
+          question.options,
+          answer.userAnswer,
         );
       } else {
-        results = await this.getCorrectAnswerSentence(
+        prompt = this.getCorrectAnswerSentence(
           question.title,
-          answers.userAnswer,
+          answer.userAnswer,
         );
+      }
+
+      let generatedResults;
+      try {
+        const response = await this.openai.chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: prompt }],
+          max_tokens: 400,
+          temperature: 0,
+        });
+
+        const content = response.choices[0].message?.content;
+        generatedResults = JSON.parse(content || '{}');
+      } catch (err) {
+        console.error('OpenAI 응답 파싱 오류:', err);
+        throw new Error('GPT 응답이 유효한 JSON이 아닙니다.');
       }
 
       resultsToSave.push({
-        question: question,
-        userAnswer: answers.userAnswer,
-        isCorrect: results.isCorrect,
-        correctAnswer: results.correctAnswer,
-        description: results.description,
+        question,
+        userAnswer: answer.userAnswer,
+        isCorrect: generatedResults.isCorrect,
+        correctAnswer: generatedResults.correctAnswer,
+        description: generatedResults.description,
         user,
         quiz,
       });
     }
 
     quiz.status = QuizStatus.COMPLETED;
-    await this.resultRepository.save(resultsToSave);
 
+    await this.resultRepository.save(resultsToSave);
     return { quizId: quiz.id };
   }
 
@@ -106,93 +116,60 @@ export class ResultService {
     });
   }
 
-  async getCorrectAnswerMultipleChoice(
+  private getCorrectAnswerMultipleChoice(
     title: string,
     options: string[],
     userAnswer: string,
-  ): Promise<{
-    isCorrect: boolean;
-    description: string;
-    correctAnswer: string;
-  }> {
-    const prompt = `
+  ): string {
+    return `
       Evaluate the following multiple-choice question and provide the results in JSON format.
-  
+
       Question: "${title}"
       Options: ${options.join(', ')}
-  
+
       User's Answer: "${userAnswer}"
-  
+
       ### Key Instructions:
       1. Evaluate whether the user's answer is correct based on the options provided.
       2. Provide a detailed explanation in Korean, indicating why the answer is correct or incorrect.
          - If correct, explain why the selected option is the correct one.
          - If incorrect, explain the mistake and provide the correct answer.
       3. Return the correct answer in Korean and explain why it is the best option.
-  
+
       **Response Format (JSON)**
       {
         "isCorrect": true or false,
         "description": "A detailed explanation in Korean based on the user's answer.",
         "correctAnswer": "The correct answer in Korean with a detailed explanation."
       }
-  
+
       **STRICTLY RETURN JSON ONLY.**
     `;
-
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 400,
-      temperature: 0,
-    });
-
-    const result = response.choices[0].message?.content;
-
-    return JSON.parse(result || '{}');
   }
 
-  async getCorrectAnswerSentence(
-    title: string,
-    userAnswer: string,
-  ): Promise<{
-    isCorrect: boolean;
-    description: string;
-    correctAnswer: string;
-  }> {
-    const prompt = `
+  private getCorrectAnswerSentence(title: string, userAnswer: string): string {
+    return `
       Evaluate the following question and provide the results in JSON format.
-  
+
       Question: "${title}"
-  
+
       User's Answer: "${userAnswer}"
-  
+
       ### Key Instructions:
       1. Determine if the user's answer is correct ('True') or incorrect ('False') based on the question's requirements.
       2. Provide a detailed explanation in Korean based on the user's answer.
          - If the answer is correct, provide a detailed explanation of why it is correct.
          - If the answer is incorrect, explain why it is wrong and provide constructive feedback on how to approach the question correctly.
       3. Return the correct or model answer in Korean.
-  
+
       **Response Format (JSON)**
       {
         "isCorrect": true or false,
         "description": "A detailed explanation in Korean based on the user's answer.",
         "correctAnswer": "The correct answer in Korean or a detailed explanation of the concept."
       }
-  
+
       **STRICTLY RETURN JSON ONLY.**
     `;
-
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 400,
-      temperature: 0,
-    });
-
-    const result = response.choices[0].message?.content;
-
-    return JSON.parse(result || '{}');
   }
 }
