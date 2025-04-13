@@ -5,6 +5,8 @@ export type TPortfolio = {
 
 export type TPortfolioResponse = {
   id: number;
-  createdAt: string;
   filePath: string;
+  fileName: string;
+  signedUrl: string;
+  createdAt: string;
 };
