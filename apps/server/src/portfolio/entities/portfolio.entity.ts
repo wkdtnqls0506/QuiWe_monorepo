@@ -8,6 +8,9 @@ export class PortfolioEntity extends BaseEntity {
   id: number;
 
   @Column()
+  fileName: string;
+
+  @Column()
   filePath: string;
 
   @ManyToOne(() => UserEntity, (user) => user.portfolios, {
