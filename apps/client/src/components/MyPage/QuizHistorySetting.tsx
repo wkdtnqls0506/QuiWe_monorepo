@@ -5,7 +5,7 @@ import { useUserStore } from '@/providers/user-provider';
 import { useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
-import NoQuizHistory from './NoQuizHistory';
+import NoHistory from './NoHistory';
 
 const QuizHistorySetting = () => {
   const router = useRouter();
@@ -69,7 +69,12 @@ const QuizHistorySetting = () => {
             );
           })
       ) : (
-        <NoQuizHistory />
+        <NoHistory
+          title='아직 퀴즈 기록이 없어요!'
+          description='새로운 퀴즈를 생성하고 학습을 시작해보세요.'
+          buttonText='퀴즈 풀러 가기 🚀'
+          redirectUrl='/quiz'
+        />
       )}
     </section>
   );

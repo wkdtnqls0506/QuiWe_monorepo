@@ -114,6 +114,12 @@ const Header = () => {
                     className='w-16 h-16 rounded-full object-cover mb-2'
                   />
                   <p className='font-semibold text-gray-900'>{user.name}님 안녕하세요</p>
+                  <button
+                    className='mt-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-100'
+                    onClick={() => router.push('/mypage?tab=my-portfolios')}
+                  >
+                    내 포트폴리오
+                  </button>
                 </div>
                 <hr className='my-3 border-gray-300' />
                 <button
