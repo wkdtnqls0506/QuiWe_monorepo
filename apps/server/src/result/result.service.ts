@@ -38,6 +38,8 @@ export class ResultService {
     createResultDto: CreateResultDto,
     userId: number,
   ) {
+    console.log('test입니다.');
+
     const quiz = await this.quizRepository.findOne({ where: { id: quizId } });
 
     const questions = await this.questionRepository.find({
