@@ -17,6 +17,8 @@ RUN pnpm install --unsafe-perm
 # 앱 소스 복사
 COPY ./apps/server ./
 
+RUN npm rebuild bcrypt --build-from-source
+
 # NestJS 빌드
 RUN pnpm run build
 
