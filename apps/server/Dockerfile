@@ -18,6 +18,8 @@ COPY ./apps/server/package.json ./
 RUN npm install -g pnpm
 RUN pnpm install --unsafe-perm
 
+RUN pnpm rebuild bcrypt
+
 # 애플리케이션 소스 복사
 COPY ./apps/server ./
 
