@@ -7,7 +7,7 @@ services:
     ports:
       - '4000:4000' # 4000번 포트 매핑
     env_file:
-      - .env
+      - ./.env
     depends_on:
       - db
 
