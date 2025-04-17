@@ -12,7 +12,7 @@ COPY ./apps/server/package.json ./
 
 # pnpm 설치 및 의존성 설치
 RUN npm install -g pnpm
-RUN pnpm install 
+RUN pnpm install --unsafe-perm
 
 # 앱 소스 복사
 COPY ./apps/server ./
