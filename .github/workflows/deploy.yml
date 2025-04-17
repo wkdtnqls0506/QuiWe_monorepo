@@ -51,6 +51,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/quiwe
+
+            git pull origin main
+
             export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
 
             sudo docker stop QuiWe_Server || true
