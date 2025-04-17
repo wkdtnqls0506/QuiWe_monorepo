@@ -16,7 +16,7 @@ COPY ./apps/server/package.json ./
 
 # pnpm 설치 및 의존성 설치
 RUN npm install -g pnpm
-RUN pnpm install --frozen-lockfile --unsafe-perm
+RUN pnpm install --unsafe-perm
 
 # 애플리케이션 소스 복사
 COPY ./apps/server ./
