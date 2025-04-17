@@ -12,9 +12,7 @@ COPY ./apps/server/package.json ./
 
 # pnpm 설치 및 의존성 설치
 RUN npm install -g pnpm
-
-# 의존성 설치 후 bcrypt만 다시 빌드
-RUN pnpm install --unsafe-perm && npm rebuild bcrypt --build-from-source
+RUN pnpm install 
 
 # 앱 소스 복사
 COPY ./apps/server ./
