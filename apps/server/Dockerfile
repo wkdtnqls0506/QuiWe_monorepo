@@ -11,6 +11,8 @@ COPY ./apps/server/package.json ./
 RUN npm install -g pnpm
 RUN pnpm install
 
+RUN pnpm install --unsafe-perm
+
 # 애플리케이션 소스 복사
 COPY ./apps/server ./
 
