@@ -9,7 +9,7 @@ export class JwtKakaoStrategy extends PassportStrategy(Strategy, 'kakao') {
     super({
       clientID: configService.get<string>('KAKAO_ID'),
       clientSecret: configService.get<string>('KAKAO_SECRET'),
-      callbackURL: configService.get<string>('KAKAO_CALLBACK_URL'),
+      callbackURI: configService.get<string>('KAKAO_CALLBACK_URI'),
       scope: ['account_email'],
     });
   }

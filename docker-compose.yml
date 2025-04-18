@@ -6,26 +6,8 @@ services:
     container_name: QuiWe_Server
     ports:
       - '4000:4000' # 4000번 포트 매핑
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      ENVIRONMENT: ${ENVIRONMENT}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-      HASH_ROUNDS: ${HASH_ROUNDS}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_REFRESH_TOKEN: ${JWT_REFRESH_TOKEN}
-      KAKAO_ID: ${KAKAO_ID}
-      KAKAO_SECRET: ${KAKAO_SECRET}
-      KAKAO_CALLBACK_URI: ${KAKAO_CALLBACK_URI}
-      KAKAO_LOGOUT_URI: ${KAKAO_LOGOUT_URI}
-      CLIENT_CALLBACK_URI: ${CLIENT_CALLBACK_URI}
-      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
-      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
-      AWS_REGION: ${AWS_REGION}
-      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+    env_file:
+      - .env
     depends_on:
       - db
 
