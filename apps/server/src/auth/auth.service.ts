@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
@@ -33,8 +33,16 @@ export class AuthService {
       refreshToken: hashedRefreshToken,
     });
 
-    res.cookie('accessToken', accessToken, { httpOnly: true });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true });
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
 
     return { accessToken, refreshToken };
   }
@@ -69,7 +77,11 @@ export class AuthService {
       { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
 
-    res.cookie('accessToken', newAccessToken, { httpOnly: true });
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    });
 
     return res.json({ accessToken: newAccessToken });
   }
