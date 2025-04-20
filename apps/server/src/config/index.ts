@@ -4,6 +4,6 @@ import configuration from './configuration';
 export default ({} = {}) =>
   ConfigModule.forRoot({
     isGlobal: true,
-    envFilePath: '../../.env',
+    envFilePath: '.env',
     load: [configuration],
   });
