@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  let accessToken = request.cookies.get('accessToken')?.value;
+  const accessToken = request.cookies.get('accessToken')?.value;
+  console.log('Access Token:', accessToken);
 
   if (!accessToken) {
     return NextResponse.redirect(new URL('/login', request.url));
