@@ -16,7 +16,7 @@ export default function LoginPage() {
           className='mt-6 w-full flex items-center justify-center gap-2 bg-[#FEE500] text-black py-3 rounded-lg font-semibold hover:bg-yellow-300 transition'
           onClick={handleKakaoLogin}
         >
-          <Image src='/images/kakao_logo.svg' alt='카카오 로고' width={24} height={24} />
+          <Image src='/kakao_logo.svg' alt='카카오 로고' width={24} height={24} />
           카카오 로그인
         </button>
         <p className='text-sm text-gray-500 mt-4'>
