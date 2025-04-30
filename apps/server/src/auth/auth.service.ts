@@ -37,11 +37,13 @@ export class AuthService {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      domain: '.quiwe.shop',
     });
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      domain: '.quiwe.shop',
     });
 
     return { accessToken, refreshToken };
@@ -81,6 +83,7 @@ export class AuthService {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      domain: '.quiwe.shop',
     });
 
     return res.json({ accessToken: newAccessToken });
