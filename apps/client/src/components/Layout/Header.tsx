@@ -1,6 +1,5 @@
 'use client';
 
-import logo from 'public/logo.svg?url';
 import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -72,7 +71,7 @@ const Header = () => {
   bg-white shadow-sm z-50'
     >
       <Link href='/' className='cursor-pointer'>
-        <Image src={logo} alt='로고 이미지' width={150} height={50} />
+        <Image src='/images/logo.svg' alt='로고 이미지' width={150} height={50} />
       </Link>
       <div className='flex items-center gap-4 relative'>
         {headerCategories.map((category) => (
