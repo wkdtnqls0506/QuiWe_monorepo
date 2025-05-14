@@ -39,6 +39,7 @@ export class AuthService {
       sameSite: 'none',
       domain: '.quiwe.shop',
     });
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
