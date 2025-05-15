@@ -27,7 +27,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.cookies.set({
+    name: 'accessToken',
+    value: accessToken.value,
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/'
+  });
+
+  return response;
 }
 
 export const config = {
