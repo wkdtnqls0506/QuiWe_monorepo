@@ -1,36 +1,35 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { ResponseCookies, RequestCookies } from 'next/dist/server/web/spec-extension/cookies';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-function applySetCookie(req: NextRequest, res: NextResponse): void {
-  const setCookies = new ResponseCookies(res.headers);
+const PUBLIC_PATHS = ['/login', '/oauth/kakao/callback'];
 
-  const newReqHeaders = new Headers(req.headers);
-  const newReqCookies = new RequestCookies(newReqHeaders);
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  setCookies.getAll().forEach((cookie) => newReqCookies.set(cookie));
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.includes('.') ||
+    pathname === '/favicon.ico'
+  ) {
+    return NextResponse.next();
+  }
 
-  const overrideRes = NextResponse.next({ request: { headers: newReqHeaders } });
-  overrideRes.headers.forEach((value, key) => {
-    if (key === 'x-middleware-override-headers' || key.startsWith('x-middleware-request-')) {
-      res.headers.set(key, value);
-    }
-  });
-}
+  if (PUBLIC_PATHS.some((publicPath) => pathname.startsWith(publicPath))) {
+    return NextResponse.next();
+  }
 
-export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get('accessToken')?.value;
-  console.log('📌 Access Token:', accessToken);
+  const accessToken = request.cookies.get('accessToken');
 
-  // accessToken이 없다면 로그인 페이지로 이동
   if (!accessToken) {
-    const response = NextResponse.redirect(new URL('/login', request.url));
-    applySetCookie(request, response);
-    return response;
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('redirect', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/quiz/:path*', '/portfolio', '/challenge/:path*', '/result/:path*', '/mypage']
+  matcher: ['/((?!_next|api|.*\\..*).*)', '/login']
 };
