@@ -33,23 +33,16 @@ export class AuthService {
       refreshToken: hashedRefreshToken,
     });
 
-    // 클라이언트 도메인 추출 (환경변수에서)
-    const clientDomain = new URL(process.env.CLIENT_CALLBACK_URI).hostname;
-
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: clientDomain, // 클라이언트 도메인 지정
-      path: '/',
     });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: clientDomain, // 클라이언트 도메인 지정
-      path: '/',
     });
 
     return { accessToken, refreshToken };
@@ -85,15 +78,10 @@ export class AuthService {
       { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
 
-    // 클라이언트 도메인 추출 (환경변수에서)
-    const clientDomain = new URL(process.env.CLIENT_CALLBACK_URI).hostname;
-
     res.cookie('accessToken', newAccessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: clientDomain, // 클라이언트 도메인 지정
-      path: '/',
     });
 
     return res.json({ accessToken: newAccessToken });
