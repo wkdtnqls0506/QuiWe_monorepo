@@ -12,7 +12,7 @@ async function bootstrap() {
   app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
   app.enableCors({
-    origin: process.env.CLIENT_CALLBACK_URI,
+    origin: ['https://quiwe.shop', 'https://www.quiwe.shop'],
     credentials: true,
   });
 
