@@ -14,9 +14,14 @@ async function bootstrap() {
   app.enableCors({
     origin: ['https://quiwe.shop', 'https://www.quiwe.shop'],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Authorization',
+      'Content-Type',
+      'Accept',
+      'Cache-Control',
+    ],
   });
-
-  // app.setGlobalPrefix('api');
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
