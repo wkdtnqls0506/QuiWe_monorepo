@@ -1,81 +1,60 @@
-# Turborepo starter
+## 🥝 QuiWe
 
-This is an official starter Turborepo.
+> 사용자의 이력서, 포트폴리오, 혹은 직접 선택한 기술 키워드를 기반으로 GPT API를 활용해 맞춤형 퀴즈를 자동 생성하고 풀 수 있는 웹 서비스
 
-## Using this example
+<br>
 
-Run the following command:
+## 🧩 QuiWe 기능 소개
 
-```sh
-npx create-turbo@latest
-```
+### 1️⃣ 홈 페이지
 
-## What's inside?
+<video src="https://github.com/user-attachments/assets/d74a781f-1856-468a-a5ee-ccdef9ccee34" controls width="600" />
 
-This Turborepo includes the following packages/apps:
+- QuiWe의 서비스 소개 및 사용 방법을 안내하는 홈 페이지입니다.
 
-### Apps and Packages
+### 2️⃣ 로그인 페이지
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+<video src="https://github.com/user-attachments/assets/40c14945-7774-46b5-9bc6-35f2166e699a" controls width="600" />
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- 카카오 로그인을 통해 QuiWe 서비스에 간편하게 가입하고 시작할 수 있습니다.
+- 별도의 회원가입 절차 없이 소셜 로그인으로 빠르게 접근이 가능합니다.
 
-### Utilities
+### 3️⃣ 기술 키워드 기반 문제 생성 페이지
 
-This Turborepo has some additional tools already setup for you:
+<video src="https://github.com/user-attachments/assets/5eb95518-38e5-4a65-a726-c7c01332bfcd" controls width="600" />
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- 관심 있는 기술 스택과 세부 주제를 선택하면 맞춤형 퀴즈가 생성됩니다.
+- 초급 / 중급 / 고급 난이도도 함께 선택할 수 있어 단계별 학습이 가능합니다.
 
-### Build
+### 4️⃣ 문제 풀이 페이지
 
-To build all apps and packages, run the following command:
+<video src="https://github.com/user-attachments/assets/11c20f25-c131-4c36-b44f-f684f2a3df04" controls width="600" />
 
-```
-cd my-turborepo
-pnpm build
-```
+- 객관식 및 서술형 문제를 풀며 학습할 수 있는 퀴즈 풀이 화면입니다.
+- 좌측 문제 네비게이션과 타이머를 통해 학습 흐름을 관리할 수 있습니다.
 
-### Develop
+### 5️⃣ 포트폴리오 페이지
 
-To develop all apps and packages, run the following command:
+<video src="https://github.com/user-attachments/assets/f0b7e09d-211d-40f7-9420-afda60903863" controls width="600" />
 
-```
-cd my-turborepo
-pnpm dev
-```
+- 이력서/포트폴리오 기반으로 맞춤형 서술형 질문을 생성해주는 페이지입니다.
+- 면접 대비용 질문을 연습할 수 있으며, 줄글 형식의 PDF만 지원됩니다.
 
-### Remote Caching
+### 6️⃣ 문제 해설 페이지
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+<video src="https://github.com/user-attachments/assets/83556185-ee7e-4a53-8719-e673f6988b3e" controls width="600" />
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+- 사용자가 선택한 답과 정답을 비교할 수 있습니다.
+- 각 문제에 대한 간단한 해설이 함께 제공됩니다.
 
-```
-cd my-turborepo
-npx turbo login
-```
+### 7️⃣ 마이페이지
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+<video src="https://github.com/user-attachments/assets/9e39c258-04e7-497f-a9cc-9f3da29c6051" controls width="600" />
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- 사용자가 이전에 풀었던 퀴즈들을 확인할 수 있습니다.
+  - 해설도 다시 확인 가능합니다.
+- 업로드했던 포트폴리오 목록도 함께 보여집니다.
 
-```
-npx turbo link
-```
+<br>
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+## 🧩 QuiWe 기능 소개
