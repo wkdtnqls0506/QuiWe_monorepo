@@ -2,7 +2,7 @@
 
 import CheckLevel from '@/components/Quiz/Category/CheckLevel';
 import DetailInput from '@/components/Quiz/Category/DetailInput';
-import SubmitButton from '@/components/Quiz/Category/SubmitButton';
+import GoToChallengeButton from '@/components/Quiz/Category/GoToChallengeButton';
 import quizCategory from '@/constants/quizCategory';
 
 const QuizCategoryPage = ({ params }: { params: { category: string } }) => {
@@ -19,7 +19,7 @@ const QuizCategoryPage = ({ params }: { params: { category: string } }) => {
       <div className='flex flex-col'>
         <DetailInput />
         <CheckLevel />
-        <SubmitButton />
+        <GoToChallengeButton />
       </div>
     </div>
   );
