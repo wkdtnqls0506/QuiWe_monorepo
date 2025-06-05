@@ -1,11 +1,9 @@
 import { createPortfolio } from '@/apis/portfolio';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export const useCreatePortfolio = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   return useMutation({
     mutationKey: ['portfolio'],
@@ -18,8 +16,6 @@ export const useCreatePortfolio = () => {
       queryClient.invalidateQueries({
         queryKey: ['challenge', pdfUploadData.quizId]
       });
-
-      router.push(`/challenge/${pdfUploadData.quizId}`);
     },
     onError: () => {
       toast.error('퀴즈 생성에 실패했습니다. 다시 시도해주세요.');

@@ -9,10 +9,11 @@ import QuizProblem from './QuizProblem';
 import { useAnswerStore } from '@/providers/userAnswer-store-provider';
 import { useCreateResult } from '@/hooks/useCreateResult';
 import CustomLoading from '../Layout/CustomLoading';
-import { CREATE_RESULT_MESSAGES } from '@/constants/loadingMessage';
+import { CREATE_RESULT_MESSAGES, LOADING_MESSAGE } from '@/constants/loadingMessage';
+import { useNavigationOnSuccess } from '@/hooks/useNavigationOnSuccess';
 
 const Content = ({ quizId }: { quizId: number }) => {
-  const { answers } = useAnswerStore((state) => state);
+  const { mutate, isPending, isSuccess, data: createResultData } = useCreateResult();
 
   const { data } = useQuery({
     queryKey: ['challenge', quizId],
@@ -20,7 +21,7 @@ const Content = ({ quizId }: { quizId: number }) => {
     staleTime: Infinity
   });
 
-  const { mutate, isPending } = useCreateResult();
+  const { answers } = useAnswerStore((state) => state);
 
   const questionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedNumber, setSelectedNumber] = useState<number>(1);
@@ -48,6 +49,20 @@ const Content = ({ quizId }: { quizId: number }) => {
     mutate({ quizId, answers });
   };
 
+  const { isNavigating } = useNavigationOnSuccess({
+    isSuccess,
+    data: createResultData,
+    getRedirectPath: (data) => `/result/${data?.quizId}`
+  });
+
+  if (isPending) {
+    return <CustomLoading messages={CREATE_RESULT_MESSAGES} intervalTime={3000} />;
+  }
+
+  if (isNavigating) {
+    return <CustomLoading messages={LOADING_MESSAGE} />;
+  }
+
   return (
     <div className='p-8 flex'>
       <div>
@@ -64,13 +79,7 @@ const Content = ({ quizId }: { quizId: number }) => {
             onClick={handleClick}
             disabled={data?.questions.length !== answers.length}
           >
-            {isPending ? (
-              <CustomLoading messages={CREATE_RESULT_MESSAGES} />
-            ) : data?.questions.length !== answers.length ? (
-              '모든 문제를 완료하세요'
-            ) : (
-              '답안 제출하기'
-            )}
+            {data?.questions.length !== answers.length ? '모든 문제를 완료하세요' : '답안 제출하기'}
           </button>
         </div>
       </div>

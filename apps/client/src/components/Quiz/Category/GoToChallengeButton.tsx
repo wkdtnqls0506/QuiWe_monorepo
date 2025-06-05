@@ -1,22 +1,19 @@
 'use client';
 
 import { useCreateQuiz } from '@/hooks/useCreateQuiz';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import CustomLoading from '@/components/Layout/CustomLoading';
 import toast from 'react-hot-toast';
 import { CREATE_QUIZ_MESSAGES, LOADING_MESSAGE } from '@/constants/loadingMessage';
-import { useEffect, useState } from 'react';
+import { useNavigationOnSuccess } from '@/hooks/useNavigationOnSuccess';
 
-const SubmitButton = () => {
-  const router = useRouter();
-  const [isNavigating, setIsNavigating] = useState(false);
+const GoToChallengeButton = () => {
+  const { mutate, isPending, isSuccess, data } = useCreateQuiz();
 
   const lastPath = usePathname().split('/').pop();
   const searchParams = useSearchParams();
   const detailsParams = searchParams.getAll('detail');
   const levelParams = searchParams.get('level');
-
-  const { mutate, isPending, isSuccess, data } = useCreateQuiz();
 
   const handleClick = () => {
     if (!detailsParams || !levelParams || !lastPath) {
@@ -31,15 +28,14 @@ const SubmitButton = () => {
     });
   };
 
-  useEffect(() => {
-    if (isSuccess && data?.id) {
-      setIsNavigating(true);
-      router.replace(`/challenge/${data.id}`);
-    }
-  }, [isSuccess, data]);
+  const { isNavigating } = useNavigationOnSuccess({
+    isSuccess,
+    data,
+    getRedirectPath: (data) => `/challenge/${data?.id}`
+  });
 
   if (isPending) {
-    return <CustomLoading messages={CREATE_QUIZ_MESSAGES} />;
+    return <CustomLoading messages={CREATE_QUIZ_MESSAGES} intervalTime={3000} />;
   }
 
   if (isNavigating) {
@@ -56,4 +52,4 @@ const SubmitButton = () => {
   );
 };
 
-export default SubmitButton;
+export default GoToChallengeButton;
