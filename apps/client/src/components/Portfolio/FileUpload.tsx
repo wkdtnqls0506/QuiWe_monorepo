@@ -6,14 +6,15 @@ import PdfPreview from './PdfPreview';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import { useCreatePortfolio } from '@/hooks/useCreatePortfolio';
 import CustomLoading from '../Layout/CustomLoading';
-import { CREATE_QUIZ_MESSAGES } from '@/constants/loadingMessage';
+import { CREATE_QUIZ_MESSAGES, LOADING_MESSAGE } from '@/constants/loadingMessage';
+import { useNavigationOnSuccess } from '@/hooks/useNavigationOnSuccess';
 
 const FileUpload = () => {
+  const { mutate, isPending, isSuccess, data } = useCreatePortfolio();
+
   const [isDrop, setIsDrop] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-
-  const { mutate, isPending } = useCreatePortfolio();
 
   const handleDragEnter = (event: React.DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
@@ -61,6 +62,20 @@ const FileUpload = () => {
     setPdfUrl(null);
   };
 
+  const { isNavigating } = useNavigationOnSuccess({
+    isSuccess,
+    data,
+    getRedirectPath: (data) => `/challenge/${data?.quizId}`
+  });
+
+  if (isPending) {
+    return <CustomLoading messages={CREATE_QUIZ_MESSAGES} intervalTime={3000} />;
+  }
+
+  if (isNavigating) {
+    return <CustomLoading messages={LOADING_MESSAGE} />;
+  }
+
   return (
     <div className='w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg border border-gray-200'>
       <label
@@ -85,7 +100,7 @@ const FileUpload = () => {
               mutate(file);
             }}
           >
-            {isPending ? <CustomLoading messages={CREATE_QUIZ_MESSAGES} /> : '제출하고 퀴즈 풀러가기'}
+            제출하고 퀴즈 풀러가기
           </button>
         </div>
       )}
